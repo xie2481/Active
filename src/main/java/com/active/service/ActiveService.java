@@ -18,9 +18,6 @@ import com.active.entity.Teacher;
 import com.active.entity.Video;
 import com.active.util.UtilTool;
 
-/**
- * @author: ¹¢·É
- */
 @Service
 public class ActiveService {
 

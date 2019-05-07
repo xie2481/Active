@@ -11,9 +11,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.active.service.ActiveService;
 
-/**
- * @author ¹¢·É
- */
+
 @Controller
 public class ActiveController {
 	@Resource

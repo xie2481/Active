@@ -10,9 +10,7 @@ import com.active.entity.Examsheet;
 import com.active.entity.Testsheet;
 import com.active.service.QuestionService;
 
-/**
- * @author: ¹¢·É
- */
+
 @Controller
 public class QuestionController {
 

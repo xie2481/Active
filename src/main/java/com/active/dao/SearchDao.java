@@ -9,9 +9,7 @@ import com.active.entity.Exam;
 import com.active.entity.Training;
 import com.active.entity.Video;
 
-/**
- * @author: ¹¢·É
- */
+
 public interface SearchDao {
 
 	/**

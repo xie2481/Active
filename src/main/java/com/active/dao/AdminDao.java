@@ -24,11 +24,7 @@ import com.active.entity.Teacher;
 import com.active.entity.Training;
 import com.active.entity.Video;
 
-/**
- * 
- * @author ¹¢·É
- * 
- */
+
 public interface AdminDao {
 
 	// login

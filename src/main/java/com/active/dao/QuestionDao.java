@@ -23,9 +23,7 @@ import com.active.entity.TrainQ;
 import com.active.entity.Training;
 import com.active.entity.WrongQuestion;
 
-/**
- * @author: π¢∑…
- */
+
 public interface QuestionDao {
 	/**
 	 * ∂¡»°¡∑œ∞ À˘”–

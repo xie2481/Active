@@ -31,9 +31,7 @@ import com.active.util.CompileJava;
 import com.active.util.ReadFile;
 import com.active.util.UtilTool;
 
-/**
- * @author: ¹¢·É
- */
+
 @Service
 public class QuestionService {
 

@@ -9,9 +9,7 @@ import org.springframework.stereotype.Service;
 import com.active.dao.SearchDao;
 import com.active.util.UtilTool;
 
-/**
- * @author: ¹¢·É
- */
+
 @Service
 public class SearchService {
 

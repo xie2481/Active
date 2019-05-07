@@ -21,11 +21,7 @@ import com.active.util.UtilTool;
 
 import jxl.Workbook;
 
-/**
- * 
- * @author ¹¢·É
- * 
- */
+
 @SuppressWarnings("restriction")
 @Controller
 public class AdminController {

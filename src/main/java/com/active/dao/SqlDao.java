@@ -16,9 +16,7 @@ import com.active.entity.PreviewQuestionaire;
 import com.active.entity.Student;
 import com.active.entity.Video;
 
-/**
- * @author: ¹¢·É
- */
+
 public interface SqlDao {
 
 	/**

@@ -1,6 +1,4 @@
-﻿/**
- * Created by 耿飞 on 2016/3/31.
- */
+﻿
 
 //var defaultUrl = "http://jsjwhj.oicp.net/active/";
 var defaultUrl = "http://localhost:8080/active/";

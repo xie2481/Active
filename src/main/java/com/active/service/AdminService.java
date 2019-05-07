@@ -36,11 +36,7 @@ import jxl.write.WriteException;
 import jxl.write.biff.RowsExceededException;
 
 
-/**
- * 
- * @author ¹¢·É
- * 
- */
+
 @SuppressWarnings("restriction")
 @Service
 public class AdminService {

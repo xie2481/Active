@@ -9,9 +9,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.active.service.SearchService;
 
-/*
- * @author: ¹¢·É
- */
+
 @Controller
 public class SearchController {
 
