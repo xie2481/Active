@@ -18,23 +18,20 @@ mysql 6.0.3
 
 2. 导入项目，详细可见<https://www.cnblogs.com/coder-zhang/p/3556223.html>
 
-   [^1]: 运行时，中文编码显示异常解决方案见注意事项
+   若运行时，中文编码异常，解决方案见注意事项
 
-3. 数据库的配置见数据库搭建
+3. 数据库搭建
 
-   ​
 
-###数据库搭建
-
-直接在mysql中导入active.sql文件
-
-####数据库连接
-
-请修改路径src/main/resources/conf/jdbc.properties中的信息
+​        （1）请修改路径src/main/resources/conf/jdbc.properties中的信息
 
 - jdbc_username：数据库用户名。
+
 - jdbc_password：数据库连接密码
+
 - jdbc_url：jdbc:mysql://localhost:3306/<数据库名>?characterEncoding=utf-8
+
+  （2）在mysql中导入active.sql文件
 
 ## 注意事项
 
