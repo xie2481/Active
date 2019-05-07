@@ -1,0 +1,84 @@
+<div class = "form-ipt">
+	<div class = "til">选择章节</div>
+	<div class = "con" id = "new-knowledge-div-content">
+	  <select name="chano1" class="chapter1" onclick="getNext(this.value,'new-knowledge',2);"></select>
+      <select name="chano2" class="chapter2" onclick="getNext(this.value,'new-knowledge',3);"></select>
+      <select name="chano3" class="chapter3" onclick = "showKnowledge(this.value)"></select>
+	</div>
+</div>
+<br>
+<div class = "form-ipt">
+	<div class = "til">本节已有知识点</div>
+	<div class = "con">
+		<select  class = "knowledge"></select>
+	</div>
+</div>
+<br>
+<div class = "form-ipt">
+	<div class = "til">请输入知识点</div>
+	<div class = "con">
+		<input type = "text" name = "new-knowledge">
+	</div>
+</div>
+<br>
+<div class="form-ipt">
+  <button class="til submit-btn" type="button" onclick="addKnowledge()">立即新增</button>
+</div>
+<script src = "js/public.js"></script>
+<script>
+	function initThis(){
+		initChapter(0,"new-knowledge",1);
+	}
+	
+	function showKnowledge(chpNo){
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getKnowledgeBychaNo",
+			data:{
+				chaNo:chpNo
+			},
+			success:function(j){
+				var json = JSON.parse(j).data;
+				$(".knowledge").empty();
+				for(var i = 0; i < json.length; ++i){
+					$(".knowledge").append("<option>" + json[i].knowledge + "</option>");		
+				}
+			},
+			error:function(j){
+				alert("error");
+			}
+		});
+	}
+	
+	function addKnowledge(){
+		var knowledge = $("input[name = 'new-knowledge']").val();
+		if(knowledge == ""){
+			alert("知识点不能为空");
+			return;
+		}
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "addKnowledge",
+			data:{
+				knowledge:knowledge,
+				chpNo:$("select[name = 'chano3']").val()
+			},
+			success:function(){
+				alert("提交成功");
+				reset();
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	
+	function reset(){
+		for(var i = 2; i <= 3; ++i){
+			$(".chapter" + i).empty();
+		}
+		$(".knowledge").empty();
+		$("input[name = 'new-knowledge']").val("");
+		initChapter(0,"new-knowledge",1);
+	}
+</script>

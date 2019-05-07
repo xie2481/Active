@@ -1,0 +1,237 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>预习调查情况反馈</title>
+ <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+</head>
+<style>
+	#questionare{
+		padding-left:12px;
+	}
+	.title{
+		padding-top:5px;
+		padding-left:12px;
+	}
+	.option{
+		margin-left:20px;
+	}
+	.radio{
+		margin-right:10px;
+		transform: scale(2,2)
+	}
+	.new-question{
+		background:#eee;
+	}
+	#button{
+		background:#337ab7;
+		height:30px;
+		width:100px;
+		border:none;
+		margin-left:45%;
+	}
+</style>
+<body>
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right"></div>
+  </div>
+</div>
+<!--导航-->
+<div class="navigation">
+  <div class="nav">
+    <a href="index.html">
+      <img style="margin-bottom:5px;" src="res/logo-title.png" width="160" height="40"/>
+    </a>
+    <ul></ul>
+    <div class="search">
+      <div class="search-input">
+        <input type="text" placeholder="搜索全站">
+      </div>
+      <div class="search-btn">
+        <i class="fa fa-search" style="color: white;padding: 0 5px;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!--路径-->
+<div class="route">
+  <a href="index.html">首页 / </a>
+  <a href="preview_questionare.html" class="route-now">预习情况反馈</a>
+</div>
+<!-- 内容 -->
+<div class = "content">
+	<div class = "page-title">问卷调查</div>
+	<br>
+	<div class = "page-content" id = "questionare">
+	</div>
+</div>
+<!--页尾-->
+<footer>
+  <div class="content">
+    <div class="foot-left">
+      <img height="55" src="res/logo2.png">
+    </div>
+    <div align="left" style="position:absolute; top:0px; left:125px;">
+      生动你的大学生活！<br>Alpha_0.0.1_2016-01-22
+    </div>
+    <a class="foot-link" href="introduce.html">平台介绍</a>|
+    <a class="foot-link" href="about.html">关于生动</a>|
+    <a class="foot-link" href="contact.html">联系我们</a>|
+    <a class="foot-link" href="mobile/index.html">生动网移动版</a>
+    <br>Copyright &copy; 2016 生动网页 All Rights Reserved.
+    <div class="foot-right">
+      皖ICP备16001596号<br>皖公网安备12345678987654321号
+    </div>
+  </div>
+</footer>
+</span>
+<span id="father-page" style="display: none">preview_questionare.html</span>
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script type="text/javascript">
+  var previewjson;/*定义全局的json，方便submit函数的调用*/
+  var state = false;
+  $(function () {
+	 checkState();//检查当前用户是否做过该问卷
+	 init();
+  });
+  
+  function checkState(){
+	  $.ajax({
+		 type: "post",
+		 url: defaultUrl + "checkState",
+		 async:false,
+		 data:{
+			 sNo: localStorage.getItem("sno"),
+			 claNo:localStorage.getItem("claNo")
+		 },
+		 success:function(j){
+			 if(j == "true"){//当前用户已做完试卷
+				 $("#questionare").append("<div class = 'no-tip'>暂无</div>");
+			 	 state = true;
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+  }
+  function submit(){
+	  var datamap = new Map();
+	  var value = [];
+      for(var i = 0; i < previewjson.length; ++i){
+		  var val = $("input[name = 'new-opt-" + i + "\'" + "]:checked").val();
+		  if(typeof(val) == "undefined"){
+			  alert("您有题目尚未完成，请检查后提交");
+			  return;
+		  }
+		  datamap.set(previewjson[i].rid,val);
+		  value.push(val);
+	 }
+      var temp = value[0];
+      var flag = false;
+      for(var i = 1; i < value.length; ++i){
+ 			if(value[i] != temp)
+ 				flag = true;
+      }
+      if(flag == false){//非合法的选择
+    	  alert("请至少选择一个不同的选项");
+      	  return;
+      }
+      $.ajax({
+    	 type:'post',
+    	 url:defaultUrl + "updatePreviewScore",
+    	 data:{
+    		 sNo:localStorage.getItem("sno"),
+    		 claNo:localStorage.getItem("claNo"),
+    		 jsondata:mapToJson(datamap)
+    	 },
+    	 success:function(j){
+    		 confirm("提交成功");
+    		 window.location.href = "index.html";
+    	 },
+    	 error:function(){
+    		 alert("error");
+    	 }
+      });
+      
+  }
+  
+  function strMapToObj(strMap){
+	  let obj= Object.create(null);
+	    for (let[k,v] of strMap) {
+	      obj[k] = v;
+	    }
+	    return obj;
+  }
+  
+  function mapToJson(map){
+	  return JSON.stringify(strMapToObj(map))
+  }
+  function init() {
+		 nav();
+		 if(state == false)
+	    	initQuestionare();
+  }
+  function initQuestionare(){
+	  $.ajax({
+		  type: "post",
+		  url:defaultUrl + "getPreviewQuestionare",
+		  data:{
+			  claNo:localStorage.getItem("claNo")
+		  },
+		  success:function(j){
+			  previewjson = JSON.parse(j).data;
+			  if(previewjson.length == 0){
+				  $("#questionare").append("<div class = 'no-tip'>暂无</div>");
+			  } else {
+				  $("#questionare").append("<br>")
+				 for(var i = 0; i < previewjson.length; ++i){
+					$("#questionare").append("<div id = 'new-question-" + i +"' class = 'new-question'></div><br>");
+					$("#new-question-" + i).append("<div class = 'title'><b>" + previewjson[i].knowledge + "</b></div><br>");
+					var indexNum = getIndex();
+					var dict = ["熟练","基本掌握","不太熟练","完全不理解"];
+					for(var j = 0; j < 4; ++j){
+						$("#new-question-" + i).append("<label class = 'option'><input class = 'radio' name ='new-opt-" + i + "'type ='radio' value ='"
+								+ (indexNum[j] + 1) + "'/>" + dict[indexNum[j]] + "</label>")
+					}
+				 } 
+				 $("#questionare").append(
+						 "<button type = 'button' id = 'button' onclick = 'submit()'>提交</button>");
+			  }
+		  },
+		  error:function(){
+			  alert("error");
+		  }
+	  });
+  }
+  
+  function getIndex(){
+	  var array = [];
+	  for(var i = 0; i < 4; ++i){
+		  var val = parseInt(Math.random() * 4);
+		  if(array.indexOf(val) != -1)
+			  --i;
+		  else
+		  	array.push(val);
+	  }
+	  return array;
+  }
+</script>
+</body>
+</html>+

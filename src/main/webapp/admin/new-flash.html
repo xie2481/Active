@@ -1,0 +1,84 @@
+<form id="uploadFlashForm" enctype="multipart/form-data">
+  <div class="form-ipt">
+    <div class="til">算法动画名称</div>
+    <div class="con">
+      <input name="v-name" placeholder="点击输入算法动画名称"/>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">算法动画简介</div>
+    <div class="con">
+      <textarea name="v-introduce" placeholder="点击输入算法动画简介" rows="5"/>
+    </div>
+  </div>
+  <div class="form-ipt" style="display: none">
+    <div class="til">视频类型</div>
+    <div class="con">
+      <input name="v-type" value="2"/>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">所属章节</div>
+    <div class="con">
+      <select name="chano1" class="chapter1" onclick="getNext(this.value,'new-flash',2);"></select>
+      <select name="chano2" class="chapter2" onclick="getNext(this.value,'new-flash',3);"></select>
+      <select name="chano3" class="chapter3"></select>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">上传算法动画</div>
+    <div class="con">
+      <input name="video" type="file"/>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">上传算法动画封面</div>
+    <div class="con">
+      <input name="img" type="file"/>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">教师编号</div>
+    <div class="con">
+      <input name="tno" readonly/>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">观看次数</div>
+    <div class="con">
+      <input name="v-count" value="0" readonly/>
+    </div>
+  </div>
+
+
+  <div class="form-ipt">
+    <button class="til submit-btn" type="button" onclick="uploadVideo()">立即上传</button>
+    <button type="reset" id="reset-flash">重置</button>
+  </div>
+</form>
+<script type="text/javascript">
+  var pageName = "new-flash";
+  function initThis() {
+    initChapter(0, pageName, 1);
+    $("#uploadFlashForm input[name=tno]").val(localStorage.getItem("tno"));
+  }
+  function uploadVideo() {
+    var formData = new FormData($("#uploadFlashForm")[0]);
+    $.ajax({
+      url: defaultUrl + "UploadVideo",
+      type: 'POST',
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function () {
+        alert("上传成功！");
+        $("#reset-flash").click();
+        $("#uploadFlashForm input[name=tno]").val(localStorage.getItem("tno"));
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+</script>

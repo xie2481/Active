@@ -1,0 +1,59 @@
+@gray-darker: #222;
+@gray-dark: #333;
+@gray: #444;
+@gray-light: #777;
+@gray-lighter: #eee;
+
+@color-primary: #337ab7;
+@color-success: #5cb85c;
+@color-info: #5bc0de;
+@color-warning: #f0ad4e;
+@color-danger: #d9534f;
+
+@background: #f5f5f5;
+@special-white: #fff;
+
+@radius: 3px;
+@content-width: 1080px;
+
+.border-radius (@radius: 3px) {
+  border-radius: @radius;
+  -moz-border-radius: @radius;
+  -webkit-border-radius: @radius;
+}
+
+.border-radius-all (@r1,@r2,@r3,@r4) {
+  border-radius: @r1 @r2 @r3 @r4;
+  -moz-border-radius: @r1 @r2 @r3 @r4;
+  -webkit-border-radius: @r1 @r2 @r3 @r4;
+}
+
+.transition(@time) {
+  -webkit-transition: all @time;
+  -o-transition: all @time;
+  transition: all @time;
+}
+
+.strong {
+  font-weight: bold;
+}
+
+.small {
+  font-size: 88%;
+}
+
+.content {
+  position: relative;
+  margin: 0 auto;
+  width: @content-width;
+}
+
+.fixed {
+  position: fixed;
+  top: 8px;
+  width: 210px;
+}
+
+.opacity(@opa) {
+  opacity: @opa;
+}

@@ -1,0 +1,110 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生动-后台管理</title>
+  <link href="../res/logo.ico" mce_href="../res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="../res/logo.ico" mce_href="../res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="../res/logo.ico" mce_href="../res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/default.css">
+  <style>
+    #loading {
+      background: rgba(0, 0, 0, .5);
+    }
+
+    .object {
+      width: 15px;
+      height: 15px;
+      background-color: white;
+      float: left;
+      -moz-border-radius: 50% 50% 50% 50%;
+      -webkit-border-radius: 50% 50% 50% 50%;
+      border-radius: 50% 50% 50% 50%;
+      margin-right: 15px;
+      margin-bottom: 15px;
+    }
+  </style>
+</head>
+<body>
+<!--top-->
+<div id="top-bar">
+  <a href="index.html" id="logo-div" style="background: none">
+    <img src="../res/logo3.png" height="24px" style="margin: 13px;">
+
+    <div id="logo-name">生动后台管理系统</div>
+  </a>
+  <!-- 顶部导航-->
+  <ul class="nav"></ul>
+</div>
+<!--login-->
+<div id="login">
+  <div id="login-ipt">
+    <div id="username">
+      <input id="username-ipt" placeholder="账号 / UserName">
+    </div>
+    <div id="password">
+      <input id="password-ipt" placeholder="密码 / PassWord" type="password">
+    </div>
+  </div>
+  <div id="login-btn-div">
+    <div id="login-btn">
+      登陆
+    </div>
+  </div>
+
+</div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script type="text/javascript">
+  $(function () {
+    $("body").append("<div id=\"loading\"><div id=\"loading-center\"><div id=\"loading-center-absolute\"><div class=\"object\" id=\"object_one\"></div><div class=\"object\" id=\"object_two\"></div><div class=\"object\" id=\"object_three\"></div><div class=\"object\" id=\"object_four\"></div></div></div></div>");
+
+    if (localStorage.getItem("tno") != null) {
+      location.href = "index.html";
+      return;
+    }
+
+    $("body").ajaxStart(function () {
+      $("#loading").fadeIn(300);
+    });
+    $("body").ajaxStop(function () {
+      $("#loading").hide();
+    });
+
+    $("#login-btn").click(function () {
+      $.ajax({
+        type: "post",
+        url: defaultUrl + "getTeacherByTnoTpwd",
+        data: {
+          tNo: $("#username-ipt").val(),
+          tPwd: $("#password-ipt").val()
+        },
+        success: function (j) {
+          var json = JSON.parse(j).data;
+          if (json.length == 0) {
+            alert("用户名或密码错误！");
+          } else {
+            localStorage.setItem("tno", json[0].tno);
+            localStorage.setItem("tname", json[0].tname);
+            localStorage.setItem("loginTime", new Date().getTime());
+            location.href = "index.html";
+          }
+        },
+        error: function () {
+          alert("error");
+        }
+      });
+    });
+
+    $("input").keyup(function (e) {
+      //enter
+      if (e.which == 13) {
+        $("#login-btn").click();
+      }
+    });
+  });
+</script>
+</body>
+</html>

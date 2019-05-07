@@ -1,0 +1,293 @@
+<div class = "form-ipt">
+	<div class = "til">选择发布预习要求的班级</div>
+	<div class = "con">
+		<select name = "select-claNo" id = "select-claNo"></select>
+	</div>
+</div>
+<br>
+<br>
+<div class = "form-ipt">
+	<div class = "til">线上预习要求</div>
+	<div class="con">
+    	<table class="table" id="new-online-preview-now-table"></table>
+	</div>
+  <br>
+  <div onclick="addOnlinePreview()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    新增预习项
+  </div>
+  <div onclick="delOnlinePreview()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    删除预习项
+  </div>
+</div>
+<br>
+<br>
+<br>
+<div class = "form-ipt">
+	<div class = "til">线下预习要求</div>
+	<div class = "con">
+		<table class = "table" id = "new-outline-preview-now-table"></table>
+	</div>
+	<br>
+	<div onclick = "addOutlinePreview()" class = "con" style="background: #eee;cursor: pointer;font-size: 12px;">
+	新增预习项
+	</div>
+	<div onclick="delOutlinePreview()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    删除预习项
+  </div>
+</div>
+<br>
+<br>
+<div class = "form-ipt">
+	<div class = "til">添加预习知识点</div>
+	<div class = "con">
+		<table class = "table" id = "new-knowledge-now-table"></table>
+	</div>
+	<br>
+	<div onclick = "addKnowledge()" class = "con" style="background: #eee;cursor: pointer;font-size: 12px;">
+		新增知识点
+	</div>
+	<div onclick = "delKnowledge()" class = "con" style="background: #eee;cursor: pointer;font-size: 12px;">
+		删除知识点
+	</div>
+</div> 
+<br>
+<div class="form-ipt">
+  <button class="til submit-btn" type="button" onclick="addPreview()">立即新增</button>
+</div>
+<script>
+	var index = 0;
+	var outlineIndex = 0;
+	var knowledgeIndex = 0;
+	function initThis(){
+		initClass();
+		initNewTable();
+		initNewOutlineTable();
+		initKnowledgeTable();
+	}
+	
+	function initKnowledgeTable(){
+		$("#new-knowledge-now-table").append("<tr class = 'table-head'><td>章节</td><td>知识点名称</td></tr>")	
+	}
+	
+	function addKnowledge(){
+		$("#new-knowledge-now-table").append("<tr id = 'new-knowledge-" + knowledgeIndex + "'></tr>");
+		$("#new-knowledge-" + knowledgeIndex).append("<td id = 'new-know-" +knowledgeIndex +"-div-content'></td>");
+		$("#new-know-" + knowledgeIndex + "-div-content").append("<select name = 'chano1-" + knowledgeIndex + "' class = 'chapter1'" +
+				 " onclick = \"getNext(this.value,\'new-know-" + knowledgeIndex +"\',2);\"></select>");
+		$(".chapter1").append("<option value = -1>不限</option>")
+		$("#new-know-" + knowledgeIndex + "-div-content").append("<select name = 'chano2-" + knowledgeIndex + "' class = 'chapter2'" +
+				 " onclick = \"getNext(this.value,\'new-know-" + knowledgeIndex +"\',3);\"></select>");
+		$("#new-know-" + knowledgeIndex + "-div-content").append("<select name = 'chano3-" + knowledgeIndex + "' class = 'chapter3'" +
+				" onclick = \"getKnowledge(this.value," + knowledgeIndex + ");\"></select>");
+		initChapter(0,"new-know-" + knowledgeIndex,1);
+		initKnowledge();
+		++knowledgeIndex;
+	}
+	
+	function initKnowledge(){
+		$("#new-knowledge-" + knowledgeIndex).append("<td id = 'new-know-td-" + knowledgeIndex +"'></td>");
+		$("#new-know-td-" +knowledgeIndex).append("<select name = 'knowledge" + knowledgeIndex +"' id ='select-know" + knowledgeIndex
+				+ "'></select>");
+	}
+	
+	function getKnowledge(chaNo,index_col){
+		$("#select-know" + index_col).empty();
+		if(chaNo == -1){
+			$("#select-know" + index_col).append("<option value = -1>暂无</option>");
+			return;
+		}
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getKnowledgeBychaNo",
+			data:{
+				chaNo:chaNo
+			},
+			success:function(j){
+				var json = JSON.parse(j).data;
+				if(json.length == 0){
+					$("#select-know" + index_col).append("<option value = -1>暂无</option>");
+				}
+				for(var i = 0; i < json.length; ++i){
+					$("#select-know" + index_col).append("<option value = " + json[i].id + ">" +json[i].knowledge + "</option>");
+				}
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	
+	function delKnowledge(){
+		if(knowledgeIndex == 0)
+			return;
+		$("#new-knowledge-" + (knowledgeIndex - 1)).remove();
+		--knowledgeIndex;
+	}
+	
+	function initClass(){
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getTeacherByTno",
+			data:{
+				tNo:localStorage.getItem("tno")
+			},
+			success:function(j){
+				 var json = JSON.parse(j).data;
+				 for(var i = 0; i < json.length; ++i){
+					 $("#select-claNo").append("<option value = '" + json[i].claNo + "'>" + json[i].claNo + "</option>");
+				 }
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	function initNewOutlineTable(){
+		$("#new-outline-preview-now-table").empty().append("<tr class = 'table-head'><td>预习具体要求</td></tr>");
+	}
+	
+	function addOnlinePreview(){
+		addNewRow();
+	}
+	
+	function delOnlinePreview(){
+		delNewRow();
+	}
+	
+	function addOutlinePreview(){
+		addNewOutlineRow();
+	}
+	
+	function delOutlinePreview(){
+		delNewOutlineRow();
+	}
+	
+	function addNewOutlineRow(){
+		$("#new-outline-preview-now-table").append("<tr id = 'new-outline-tr-" + outlineIndex + "'></tr>");
+		$("#new-outline-tr-" + outlineIndex).append("<td><input name = 'e-require-outline-" + outlineIndex +"'></td>");
+		++outlineIndex;
+	}
+	
+	function delNewOutlineRow(){
+		if(outlineIndex == 0)
+			return;
+		$("#new-outline-tr-" + (outlineIndex - 1)).remove();
+		--outlineIndex;
+	}
+	
+	function delNewRow(){
+		if(index == 0)
+			return;
+		$("#new-tr-" + (index - 1)).remove();
+		--index;
+	}
+	
+	function addNewRow(){
+		$("#new-online-preview-now-table").append("<tr id = 'new-tr-" + index + "'></tr>");
+		$("#new-tr-" + index).append("<td><input name = 'e-require-" + index + "'>" + "</td>");
+		$("#new-tr-" + index).append("<td><select name = 'e-type" + index + "'>" + 
+				"<option value = '1'>OJ练习题</option><option value = '2'>视频资料</option></select>"+"</td>")
+		$("#new-tr-" + index).append("<td id = 'td-choose-" + index +"'><div class = 'con' style = 'background: #eee;cursor: pointer;font-size:12px;' onclick = 'choose(" + index + ")' id = 'con-" + index +"'>选择资料</div>" + "</td>");
+		++index;
+	}
+	function initNewTable(){
+		$("#new-online-preview-now-table").empty().append("<tr class = 'table-head'><td>预习具体要求</td><td>具体类型</td><td>资料</td></tr>");
+		//addNewRow();
+	}
+	
+	function choose(_index){//选择相应视频或oj练习题的下拉列表
+		var etype = $("select[name = 'e-type" +_index + "']").val();
+		$.ajax({
+			type:"post",
+			url: defaultUrl + "getInfoList",
+			data:{
+				etype:etype
+			},
+			success:function(j){
+				var json = JSON.parse(j).data;
+				if(json.length == 0)
+					return;
+				$("#td-choose-" + _index).empty();//清空当前列，重新写
+				$("#td-choose-" + _index).append("<select name = 'e-info" + _index +"' id = 'choose" + _index +"'></select>");
+				if(etype == "1"){
+					for(var i = 0; i < json.length; ++i){
+						$("#choose" + _index).append("<option value = '" + json[i].id + "'>" + json[i].title + "(" + json[i].chaName + ")"  + "</option>");
+					}
+				} else{
+					for(var i = 0; i < json.length; ++i){
+						$("#choose" + _index).append("<option value = '" + json[i].vno + "'>" + json[i].vname + "(" + json[i].chaName + ")"  + "</option>");
+					}
+				}
+				$("#td-choose-" + _index).append("<div class = 'con' style = 'background: #eee;cursor: pointer;font-size:12px;' onclick = 'choose(" + _index + ")' id = 'con-" + _index +"'>选择资料</div>")
+			},
+			error: function(){
+				alert("error");
+			}
+		});
+	}
+	
+	function addPreview(){
+		var json = [];
+		for(var i = 0; i < index; ++i){//遍历线上预习要求部分
+			var j = {};
+			j.trequire = $("input[name = 'e-require-" + i + "']").val();
+			j.require_type = $("select[name = 'e-type" + i +"']").val();
+			j.require_id = $("select[name ='e-info" + i + "']").val();
+			j.isonline = 1;
+			json.push(j);
+		}
+		
+		//遍历线下预习的部分
+		for(var i = 0; i < outlineIndex; ++i){
+			var j = {};
+			j.trequire = $("input[name = 'e-require-outline-" + i + "']").val();
+			j.isonline = 0;
+			json.push(j);
+		}
+		
+		/*将预习信息发送到后台*/
+		/*检查是否有预习信息*/
+		if(index == 0 && outlineIndex == 0){
+			alert("请不要添加空的预习要求");
+			return;
+		}
+		//检查信息的有效性
+		for(var i = 0; i < json.length;++i){
+			if(json[i].isonline == 0){
+				if(json[i].trequire == ""){
+					alert("请添加有效的预习要求");
+					return;
+				}
+			} else{
+				if(json[i].trequire == "" || typeof(json[i].require_id) == "undefined"){
+					alert("请添加有效的预习要求");
+					return;
+				}
+			}
+		}
+		
+		var json_knowledge = [];
+		//将知识点信息加入json中
+		for(var i = 0; i < knowledgeIndex; ++i){
+			var j = {};
+			j.rid = $("select[name = 'knowledge" + i +"']").val();
+			json_knowledge.push(j);
+		}
+		$.ajax({
+			type:"post",
+			url: defaultUrl + "addNewPreview",
+			data:{
+				json:JSON.stringify(json),
+				json_knowledge:JSON.stringify(json_knowledge),
+				tno:localStorage.getItem("tno"),
+				claNo:$("select[name = 'select-claNo']").val()
+			},
+			success:function(){
+				alert("发布成功");
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+</script>

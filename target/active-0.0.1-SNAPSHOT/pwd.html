@@ -1,0 +1,177 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生动-密码修改</title>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+</head>
+<body>
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right">
+
+    </div>
+  </div>
+</div>
+<!--导航-->
+<div class="navigation">
+  <div class="nav">
+    <a href="index.html">
+      <img style="margin-bottom:5px;" src="res/logo-title.png" width="160" height="40"/>
+    </a>
+    <ul></ul>
+    <div class="search">
+      <div class="search-input">
+        <input type="text" placeholder="搜索全站">
+      </div>
+      <div class="search-btn">
+        <i class="fa fa-search" style="color: white;padding: 0 5px;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!--路径-->
+<div class="route">
+  <a href="index.html">首页 / </a>
+  <a href="#">其他模块 / </a>
+  <a href="#" class="route-now">密码修改</a>
+</div>
+<!--内容-->
+<div class="content">
+  <div class="float-left">
+    <div class="float-left-title">
+      ■ 其他模块
+    </div>
+    <a href="info.html" class="float-left-list">　个人信息</a>
+    <a href="pwd.html" class="float-left-list" id="float-left-list-now">　密码修改</a>
+  </div>
+  <div class="float-right">
+    <div class="float-right-content">
+      <div id="info">
+        <div>
+          <div class="til">原密码</div>
+          <div class="con" id="pwd">
+            <input type="password" placeholder="点击输入原密码"/>
+          </div>
+        </div>
+        <div>
+          <div class="til">新密码</div>
+          <div class="con" id="new-pwd">
+            <input type="password" placeholder="点击输入新密码"/>
+          </div>
+        </div>
+        <div>
+          <div class="til">确认密码</div>
+          <div class="con" id="con-pwd">
+            <input type="password" placeholder="点击输入确认密码"/>
+          </div>
+        </div>
+        <div>
+          <div id="edit-btn"
+               style="display: inline-block; padding: 8px; text-align: center;min-width: 150px;background: #337AB7;color: white;cursor: pointer">
+            确认修改
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--页尾-->
+<footer>
+  <div class="content">
+    <div class="foot-left">
+      <img height="55" src="res/logo2.png">
+    </div>
+    <div align="left" style="position:absolute; top:0px; left:125px;">
+      生动你的大学生活！<br>Alpha_0.0.1_2016-01-22
+    </div>
+    <a class="foot-link" href="introduce.html">平台介绍</a>|
+    <a class="foot-link" href="about.html">关于生动</a>|
+    <a class="foot-link" href="contact.html">联系我们</a>|
+    <a class="foot-link" href="mobile/index.html">生动网移动版</a>
+    <br>Copyright &copy; 2016 生动网页 All Rights Reserved.
+    <div class="foot-right">
+      皖ICP备16001596号<br>皖公网安备12345678987654321号
+    </div>
+  </div>
+</footer>
+<span id="father-page" style="display: none">#</span>
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script type="text/javascript">
+  $(function () {
+    nav();
+    changePwd();
+  });
+  function changePwd() {
+    $("#edit-btn").click(function () {
+      if ($("#pwd input").val() == "") {
+        alert("原密码不能为空！");
+        return;
+      }
+      if ($("#new-pwd input").val() == "") {
+        alert("新密码不能为空！");
+        return;
+      }
+      if ($("#new-pwd input").val() != $("#con-pwd input").val()) {
+        alert("两次输入密码不相同！");
+        return;
+      }
+      $.ajax({
+        async: false,
+        type: "post",
+        url: defaultUrl + "loginBySnoSpwd",
+        data: {
+          sNo: localStorage.getItem("sno"),
+          sPwd: $("#pwd input").val()
+        },
+        success: function (j) {
+          var s = JSON.parse(j).data.length;
+          if (s == 0) {
+            alert("原密码错误！");
+            return;
+          } else {
+            $.ajax({
+              async: false,
+              type: "post",
+              url: defaultUrl + "ChangePwd",
+              data: {
+                sNo: localStorage.getItem("sno"),
+                sPwd: $("#new-pwd input").val()
+              },
+              success: function (j) {
+                confirm("修改成功！需要重新登录");
+                localStorage.removeItem("sno");
+                localStorage.removeItem("sname");
+                localStorage.removeItem("spwd");
+                location.href = "login.html";
+              },
+              error: function () {
+                alert("error");
+              }
+            });
+          }
+        },
+        error: function () {
+          alert("error");
+        }
+      });
+    });
+  }
+</script>
+</body>
+</html>

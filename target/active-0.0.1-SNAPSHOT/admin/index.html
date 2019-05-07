@@ -1,0 +1,52 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生动-后台管理</title>
+  <link href="../res/logo.ico" mce_href="../res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="../res/logo.ico" mce_href="../res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="../res/logo.ico" mce_href="../res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/default.css">
+  <style></style>
+</head>
+<body>
+<!--top-->
+<div id="top-bar">
+  <a href="index.html" id="logo-div">
+    <img src="../res/logo3.png" height="24px" style="margin: 13px;">
+
+    <div id="logo-name">生动后台管理系统</div>
+  </a>
+  <!-- 顶部导航-->
+  <ul class="nav"></ul>
+</div>
+<!--left-->
+<div id="left-bar">
+  <ul></ul>
+</div>
+<!--TabView-->
+<ul id="tab-view">
+  <li class="tab-li sel" id="main-tab">首页</li>
+</ul>
+<!--main-->
+<div id="frame-content"></div>
+
+<script src="../js/jquery.min.js"></script>
+<script src="js/public.js" charset="utf-8"></script>
+<script type="text/javascript">
+  $(function () {
+    if (localStorage.getItem("tno") != null && (new Date() - localStorage.getItem("loginTime") < 86400000)) {
+      initHtml();
+      return;
+    } else {
+      localStorage.removeItem("tno");
+      localStorage.removeItem("tname");
+      localStorage.removeItem("loginTime");
+      location.href = "login.html";
+      return;
+    }
+  });
+</script>
+</body>
+</html>

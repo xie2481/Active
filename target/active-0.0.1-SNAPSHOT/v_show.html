@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生动-录像教学</title>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+  <link rel = "stylesheet" type = "text/css" href = "style/video-js.min.css">
+</head> 
+<body>
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right"></div>
+  </div>
+</div>
+<!--导航-->
+<div class="navigation">
+  <div class="nav">
+    <a href="index.html">
+      <img style="margin-bottom:5px;" src="res/logo-title.png" width="160" height="40"/>
+    </a>
+    <ul></ul>
+    <div class="search">
+      <div class="search-input">
+        <input type="text" placeholder="搜索全站">
+      </div>
+      <div class="search-btn">
+        <i class="fa fa-search" style="color: white;padding: 0 5px;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!--路径-->
+<div class="route">
+  <a href="index.html">首页 / </a>
+  <a href="video.html">录像教学 / </a>
+  <a href="video.html" class="route-now">视频详情</a>
+
+  <div style="font-size: 25px;padding: 5px 0;" id="vName">　</div>
+</div>
+<!--待加载内容-->
+<span id="load-content">
+<!--内容-->
+<div class="video">
+  <div class="video-left">
+    <video id="video" style="margin-bottom: -4px;" src="" onseeked = "changed()" 
+    ontimeupdate = "listenPosition()" autoplay controls></video>
+  </div>
+  <div class="video-right">
+    <div style="padding: 8px;background: #222;">
+      <div class="video-right-title-spe2">同一章节视频</div>
+    </div>
+    <ul class="video-right-title">
+    </ul>
+  </div>
+  <div>
+    <div class="video-bar">
+      <label><i class="fa fa-history fa-fw"></i><span id="vCount"></span>播放</label>
+      <!--label><i class="fa fa-quote-right fa-fw"></i>81评论</label-->
+      <a href="t_view.html"><label style="cursor: pointer"><i class="fa fa-user fa-fw"></i>涂立静</label></a>
+      <label><i class="fa fa-calendar fa-fw"></i><span id="vTime"></span>上传</label>
+      <a id="download" href=""><label style="cursor: pointer"><i class="fa fa-download fa-fw"></i>下载（右键另存为）</label></a>
+    </div>
+    <div class="video-bar" id="vIntroduce"></div>
+  </div>
+</div>
+<!--页尾-->
+<footer>
+  <div class="content">
+    <div class="foot-left">
+      <img height="55" src="res/logo2.png">
+    </div>
+    <div align="left" style="position:absolute; top:0px; left:125px;">
+      生动你的大学生活！<br>Alpha_0.0.1_2016-01-22
+    </div>
+    <a class="foot-link" href="introduce.html">平台介绍</a>|
+    <a class="foot-link" href="about.html">关于生动</a>|
+    <a class="foot-link" href="contact.html">联系我们</a>|
+    <a class="foot-link" href="mobile/index.html">生动网移动版</a>
+    <br>Copyright &copy; 2016 生动网页 All Rights Reserved.
+    <div class="foot-right">
+      皖ICP备16001596号<br>皖公网安备12345678987654321号
+    </div>
+  </div>
+</footer>
+</span>
+<span id="father-page" style="display: none">video.html</span>
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script type="text/javascript">
+  var flag = false;//记录当前用户是否拖拽视频的进度条
+  var state = false;//记录是否到达过检测点
+  $(function () {
+    init();
+  });
+  
+  function changed(){
+	 flag = true;
+  }
+  
+  function listenPosition(){
+	  var video = document.getElementById("video");
+	  if(video.currentTime / video.duration >= 0.8 && state == false){
+		  if(flag == false){//当前用户没有拖拽行为
+			  //当前视频已完成任务
+			  $.ajax({
+				 type: "post",
+				 url:defaultUrl + "addVideoFinish",
+				 async:false,
+				 data:{
+					 sno:localStorage.getItem("sno"),
+					 vno:GetQueryString("vNo")
+				 },
+				 success:function(j){
+					 state = true;
+				 },
+				 error:function(){
+					 alert("error");
+				 }
+			  });
+		  }
+	  }
+  }
+  function init() {
+    nav();
+    initVideo();
+  }
+  function initVideo() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getVideoListByVNo",
+      data: {
+        vNo: GetQueryString("vNo")
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data[0];
+        $("#vIntroduce").text(json.vintroduce);
+        $("#vName").text(json.vname);
+        $("#video").attr("src", defaultUrl + json.vaddress);
+        $("#vCount").text((json.vcount + 1));
+        $("#download").attr("href", json.vaddress);
+        $("#vTime").text(json.vtime.year + 1900 + "-" + (json.vtime.month + 1 ) + "-" + json.vtime.day);
+        $.ajax({
+          type: "post",
+          url: defaultUrl + "updateVideoCount",
+          data: {
+            vcount: (json.vcount + 1),
+            vno: GetQueryString("vNo")
+          },
+          success: function () {
+          },
+          error: function () {
+            alert("error");
+          }
+        });
+        $.ajax({
+          type: "post",
+          url: defaultUrl + "getVideoListByChaNo",
+          data: {
+            chaNo: json.chano
+          },
+          success: function (j2) {
+            var json2 = JSON.parse(j2).data;
+            $('.part4').empty();
+            for (var i = 0; i < json2.length; i++) {
+              $(".video-right-title").append("<a href=\"v_show.html?vNo=" + json2[i].vno + "\"><li>" + json2[i].vname + "</li></a>");
+            }
+          },
+          error: function () {
+            alert("error");
+          }
+        });
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+</script>
+</body>
+</html>

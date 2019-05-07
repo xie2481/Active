@@ -1,0 +1,154 @@
+<div class="toolbar">
+  题型：
+  <select name="q-type">
+    <option value="-1">不限</option>
+    <option value="1">单项选择</option>
+    <option value="2">多项选择</option>
+    <option value="3">填空</option>
+    <option value="4">判断</option>
+    <option value="5">简答</option>
+    <option value ="6">OJ题目</option>
+  </select>
+  &nbsp;&nbsp;章节：
+  <select name="chano1" class="chapter1" onclick="getNext(this.value,'all-q',2);">
+  </select>
+  <select name="chano2" class="chapter2" onclick="getNext(this.value,'all-q',3);">
+    <option value="-1">不限</option>
+  </select>
+  <select name="chano3" class="chapter3">
+    <option value="-1">不限</option>
+  </select>
+  &nbsp;&nbsp;难度：
+  <select name="q-difficulty">
+    <option value="-1">不限</option>
+    <option value="1">简单</option>
+    <option value="2">中等</option>
+    <option value="3">困难</option>
+  </select>
+  &nbsp;&nbsp;
+  <button class="toolbar-filter" onclick="doQuestionFilter()">筛选</button>
+</div>
+<table class="table" id="all-q-table"></table>
+<script src = "js/public.js"></script>
+<script type="text/javascript">
+  var pageName = "all-q";
+  function initThis() {
+    initAllQ(-1, -1, -1);
+    initChapter(0, pageName, 1);
+    $("#all-q-div-content .chapter1").prepend("<option value=\"-1\">不限</option>");
+  }
+  function initAllQ(qType, chaNo, qDifficulty) {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getQuestions",
+      data: {
+        qType: qType,
+        chaNo: chaNo,
+        qDifficulty: qDifficulty
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        var index = json.length;
+        $("#all-q-div-content #all-q-table").append("<tr class=\"table-head\"><td>题目编号</td><td>题目标题</td><td>题目类型</td><td>题目难度</td><td>所属知识点</td><td>参考答案</td><td>操作</td></tr>");
+        for (var i = 0; i < json.length; i++) {
+          $("#all-q-div-content #all-q-table").append("<tr id='all-q-tr" + i + "'></tr>");
+          $("#all-q-div-content #all-q-tr" + i).append("<td>" + json[i].qNo + "</td>");
+          $("#all-q-div-content #all-q-tr" + i).append("<td>" + json[i].qTitle + "</td>");
+          $("#all-q-div-content #all-q-tr" + i).append("<td>" + getQTypeName(json[i].qType) + "</td>");
+          $("#all-q-div-content #all-q-tr" + i).append("<td>" + getQDifficultyName(json[i].qDifficulty) + "</td>");
+          $("#all-q-div-content #all-q-tr" + i).append("<td>" + getKnowledgeName(json[i].qKnowledge) + "</td>");
+          $("#all-q-div-content #all-q-tr" + i).append("<td>" + json[i].qAnswer + "</td>");
+          $("#all-q-div-content #all-q-tr" + i).append("<td class='operate-td'><i class='fa fa-th-list' title='查看详情' onclick='questionDetail(" + json[i].qNo + ")'></i>&nbsp;&nbsp;<i class='fa fa-remove' title='删除' onclick='deleteQuestion(" + json[i].qNo + ")'></i></td>");
+        }
+        /*初始化oj题目*/
+        if(qType == "-1" || qType == "6"){
+        	$.ajax({
+        		type:"post",
+				url:defaultUrl +"getOJs",
+				data:{
+					chaNo:chaNo,
+					qDifficulty:qDifficulty
+				},
+				success:function(j){
+					var json = JSON.parse(j).data;
+					for(var i = 0; i < json.length; ++i){
+						j = i + index;
+						 $("#all-q-div-content #all-q-table").append("<tr id='all-q-tr" + j + "'></tr>");
+				          $("#all-q-div-content #all-q-tr" + j).append("<td>" + json[i].id + "</td>");
+				          $("#all-q-div-content #all-q-tr" + j).append("<td>" + json[i].title + "</td>");
+				          $("#all-q-div-content #all-q-tr" + j).append("<td>OJ题目</td>");
+				          $("#all-q-div-content #all-q-tr" + j).append("<td>" + getQDifficultyName(json[i].difficulty) + "</td>");
+				          $("#all-q-div-content #all-q-tr" + j).append("<td>" + getKnowledgeName(json[i].knowledgeId) + "</td>");
+				          $("#all-q-div-content #all-q-tr" + j).append("<td>暂无</td>");
+				          $("#all-q-div-content #all-q-tr" + j).append("<td class='operate-td'><i class='fa fa-th-list' title='查看详情' onclick='ojDetail(\"" + json[i].title + "\"," + json[i].id + ")'></i>&nbsp;&nbsp;<i class='fa fa-remove' title='删除' onclick='deleteoj(" + json[i].id + ")'></i></td>");						
+					}
+				}
+        	});
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  
+  function ojDetail(title,id){
+	  pop("<script>var title = " + "\"" + title + "\"" + "; var trainNo = " + id + "<\/script><iframe src=\"../q_oj.html\"></iframe>");
+  }
+  function deleteoj(id){
+	  if(!checkPower()){
+		  alert("您没有权限，请联系管理员");
+		  return;
+	  }
+	  if(confirm("确认要删除此问题？")){
+		  $.ajax({
+			  type:"post",
+			  url:defaultUrl + "delOJQuestion",
+			  data:{
+				  trainNo:id
+			  },
+			  success:function(){
+				  $("#all-q-div-content #all-q-table").empty();
+		          initAllQ(-1, -1, -1);
+		          alert("删除成功！")
+			  },
+			  error:function(){
+				  alert("error");
+			  }
+		  });
+	  }
+  }
+  function doQuestionFilter() {
+    var qType = $("#all-q-div-content select[name=q-type]").val();
+    var chaNo = $("#all-q-div-content select[name=chano3]").val();
+    var qDifficulty = $("#all-q-div-content select[name=q-difficulty]").val();
+    $("#all-q-div-content #all-q-table").empty();
+    initAllQ(qType, chaNo, qDifficulty);
+  }
+  function deleteQuestion(qNo) {
+	if(!checkPower()){
+		alert("您没有权限，请联系管理员");
+		return;
+	}
+    if (confirm("确认要删除此问题？")) {
+      $.ajax({
+        type: "post",
+        url: defaultUrl + "delQuestion",
+        data: {
+          qNo: qNo
+        },
+        success: function () {
+          $("#all-q-div-content #all-q-table").empty();
+          initAllQ(-1, -1, -1);
+          alert("删除成功！")
+        },
+        error: function () {
+          alert("error");
+        }
+      });
+    }
+  }
+  function questionDetail(qNo) {
+    pop("<iframe src=\"../q_preview.html?qNo=" + qNo + "\"></iframe>");
+  }
+</script>

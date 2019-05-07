@@ -1,0 +1,535 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+  <title>生动-课后反馈</title>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+  <script src="js/public.js" charset="gbk"></script>
+  <style>
+  #questionare{
+		padding-left: 20px;
+	}
+	.que{
+		padding-left:15px;
+	}
+    .onquestion:before { content: ""; display: table; }
+
+    .onquestion:after { content: ""; display: table; clear: both; }
+
+     .onquestion > div { position: relative; float: left; margin-right: 50px; width: 80px; height: 40px; line-height: 40px; }
+
+     .onquestion > div:last-child { margin-right: 0; }
+
+     .onquestion label { display: block; width: 70px; height: 40px; line-height: 40px; cursor: pointer; }
+
+     .onquestion input { z-index: 3; display: block; opacity: 0; position: absolute; top: 0; bottom: 0; left: 70px; margin: auto; width: 30px; height: 30px; cursor: pointer; }
+
+     .onquestion .user-defined { z-index: 2; position: absolute; top: 0; bottom: 0; left: 75px; margin: auto; width: 30px; height: 30px; border: 1px solid #000; border-radius: 50%; cursor: pointer; }
+
+     .onquestion .user-defined span.circle  { display: block; width: 24px; height: 24px; margin-top: 2px; margin-left: 5px; background-color: transparent; border-radius: 50%; }
+
+     .onquestion .user-defined span.active  { background-color: #000; }
+     .button {
+		background-color: #5bc0de;
+		border: none;
+		color: #222;
+		padding: 5px 16px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 10px;
+		margin: 4px 2px;
+		cursor: pointer;
+		}
+  </style>
+</head>
+</head>
+<body>
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right">
+
+    </div>
+  </div>
+</div>
+<!--导航-->
+<div class="navigation">
+  <div class="nav">
+    <a href="index.html">
+      <img style="margin-bottom:5px;" src="res/logo-title.png" width="160" height="40"/>
+    </a>
+    <ul></ul>
+    <div class="search">
+      <div class="search-input">
+        <input type="text" placeholder="搜索全站">
+      </div>
+      <div class="search-btn">
+        <i class="fa fa-search" style="color: white;padding: 0 5px;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!--路径-->
+<div class="route">
+  <a href="index.html">首页 / </a>
+  <a href="classfeedback.html" class="route-now">课后反馈</a>
+</div>
+<!-- 内容 -->
+<div class = "content">
+	<div id="question-bar">
+    <span style="color: white">反馈试题</span>
+    <span id="train-name"></span>
+  </div>
+	<div id = "exam-left">
+	<div id="exam-right">
+    <div style="padding: 8px;">
+      <div class="video-right-title-spe" style="padding: 10px 0;font-weight: bold">答题卡</div>
+      <div class="video-right-title-spe" style="padding:10px 0; border: 1px solid #ddd;border-top: 0;border-bottom: 0">
+        <div
+            style="width:83px;display: inline-block;border: 1px dashed #ddd; line-height: 31.6px;color: #ddd;margin-right: 6px;">
+          未做题目
+        </div>
+        <div
+            style="width:83px;display: inline-block;border: 1px solid #337AB7;line-height: 31.6px;background:#337AB7;color: white ">
+          已做题目
+        </div>
+      </div>
+      <ul id="q-no">
+        <div id="exam-hand-in">点击交卷
+          <span id="time-2" style="display: none">
+            &nbsp;&nbsp;|&nbsp;&nbsp;
+            <span class="t_h">00</span> : <span class="t_m">00</span> : <span class="t_s">00</span>
+          </span>
+        </div>
+      </ul>
+    </div>
+  </div>
+	</div>
+</div>
+<footer>
+  <div class="content">
+    <div class="foot-left">
+      <img height="55" src="res/logo2.png">
+    </div>
+    <div align="left" style="position:absolute; top:0px; left:125px;">
+      生动你的大学生活！<br>Alpha_0.0.1_2016-01-22
+    </div>
+    <a class="foot-link" href="introduce.html">平台介绍</a>|
+    <a class="foot-link" href="about.html">关于生动</a>|
+    <a class="foot-link" href="contact.html">联系我们</a>|
+    <a class="foot-link" href="mobile/index.html">生动网移动版</a>
+    <br>Copyright &copy; 2016 生动网页 All Rights Reserved.
+    <div class="foot-right">
+      皖ICP备16001596号<br>皖公网安备12345678987654321号
+    </div>
+  </div>
+</footer>
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script>
+	var hash;
+	$(function(){
+		nav();
+		checkState();
+		initQuestion();
+	    initQCard();
+	    initSaveBtn();
+	    initHandInBtn();
+	    initClickO();
+	    initHasDone();
+	});
+	function checkState(){
+		$.ajax({
+			type: "post",
+			url: defaultUrl + "checkFeedQuestionState",
+			data:{
+				sNo: localStorage.getItem("sno"),
+				claNo:localStorage.getItem("claNo")
+			},
+			success:function(j){
+				if(j == "true"){
+					confirm("您已完成课后反馈试题");
+					window.location.href = "index.html";
+				}
+			}
+		});
+	}
+	var feedbackjson;
+	function initQuestion() {
+		var flag = false;
+		for (var i = 1; i <= 5; i++) {
+		      $.ajax({
+		        async: false,
+		        type: "post",
+		        url: defaultUrl + "getClassFeedbackQuestionare",
+		        data: {
+		          claNo:localStorage.getItem("claNo"),
+		          qType: i
+		        },
+		        success: function (j) {
+		          var json = JSON.parse(j).data;
+		          if (json.length > 0) {
+		        	flag = true;
+		        	hash = hashCode(j);
+		            //添加题目类型
+		            var maxSize = 2;//每种题型显示题目的数量最大值
+		            $("#exam-left").append("<div class=\"q-type-div\" id=\"type" + i + "\"><div class=\"page-title-t exam-q-type\"><i class=\"fa fa-question-circle\"></i><span class=\"q-type\"></span></div></div>");
+		            $("#q-no").append("<li class=\"big\"><span class=\"big_s\" id='type-title-" + i + "'></span><div class=\"lit_d\" id='type-little-" + i + "'></div></li>");
+		            for (var i2 = 0; i2 < json.length; i2++) {
+		            	if(!(i2 == json.length - 1 && maxSize == 2)){//保证当前模块至少显示一道题，防止反馈模块显示0道题
+		            		var isadd = getAdd();
+			        		if(!isadd || maxSize == 0){
+			        			continue;
+			        		}
+		            	} 
+			        	--maxSize;
+		              //添加题目
+		              $("#type" + i).append("<div class=\"exam-question\" id=\"type" + i + "-q" + (i2 + 1) + "-q\"><div class=\"exam-q-title\">" + (i2 + 1) + "、" + json[i2].QTitle + "<span class='exam-q-mark' id=\"exam-q-mark-" + json[i2].QNo + "\"></span></div><div class=\"exam-q-options\" id='exam-q-options" + json[i2].QNo + "'></div><div class=\"exam-q-bottom\">我的答案：<span class=\"exam-my-a\">作答并保存</span><span class=\"exam-save-btn\" id=\"save-qno-" + json[i2].QNo + "\">保存</span></div></div>")
+		              initOptions(json[i2].QNo, i);
+		              //添加答题卡
+		              $("#type-little-" + i).append("<div class=\"question-no\" id='type" + i + "-q" + (i2 + 1) + "'>" + (i2 + 1) + "</div>");
+		            }
+		          } 
+		        },
+		        error: function () {
+		          alert("error");
+		        }
+		      });
+		    }
+		if(flag == false){
+			confirm("暂时没有待做的试题");
+			window.location.href = "index.html";
+		}
+	}
+	
+	function getAdd(){
+		var val = parseInt(Math.random() * 2);
+		return val != 0 ? true : false;
+	}
+	//产生一个json的hash值，用于区分这次的测试
+	function hashCode(str) {
+	    var h = 0;
+	    var len = str.length;
+	    var t = 2147483648;
+	    for (var i = 0; i < len; i++) {
+	        h = 31 * h + str.charCodeAt(i);
+	        if (h > 2147483647) h %= t; //java int溢出则取模
+	    }
+	    /*var t = -2147483648 * 2;
+	     while (h > 2147483647) {
+	     h += t
+	     }*/
+	    return h;
+	}
+	  //初始化选项
+	  function initOptions(qNo, qType) {
+	    if (qType == 1 || qType == 2) {
+	      $.ajax({
+	        type: "post",
+	        async: false,
+	        url: defaultUrl + "getOptionListByQNo",
+	        data: {
+	          qNo: qNo
+	        },
+	        success: function (j) {
+	          var json = JSON.parse(j).data;
+	          for (var i3 = 0; i3 < json.length; i3++) {
+	            $("#exam-q-options" + qNo).append("<div id=\"type1-q1-" + json[i3].oNo + "\" class=\"exam-q-o\">" + json[i3].oNo + "、" + json[i3].oContent + "</div>")
+	          }
+	        },
+	        error: function () {
+	          alert("error");
+	        }
+	      });
+	    } else if (qType == 4) {
+	      $("#exam-q-options" + qNo).append("<div class=\"exam-q-o\">正确</div><div class=\"exam-q-o\">错误</div>");
+	    } else if (qType == 3) {
+	      $("#exam-q-options" + qNo).append("<textarea class=\"exam-q-ipt\" rows=\"4\" placeholder=\"在这里填写你的答案，答案用，隔开 ...\"></textarea>");
+	    } else if (qType == 5) {
+	      $("#exam-q-options" + qNo).append("<textarea class=\"exam-q-ipt\" rows=\"8\" placeholder=\"在这里填写你的答案 ...\"></textarea>");
+	    }
+	  }
+	  //初始化保存按钮
+	  function initSaveBtn() {
+	    $(".exam-save-btn").click(function () {
+	      var type = $($(this).parents(".q-type-div")).attr("id");
+	      var dom = $(this).parents(".exam-question");
+	      var answer = "";
+	      var qno = $(this).attr("id").substr(9);
+	      if (type == "type1" || type == "type2") {
+	        var val = dom.find(".exam-q-o-sel");
+	        val.each(function () {
+	          answer += $(this).attr("id").substr(9);
+	        });
+	        if (answer != "") {
+	          $(dom.find(".exam-my-a")).text(answer);
+	          saveAnswer(answer, qno);
+	        } else {
+	          alert("答案不能为空！");
+	        }
+	      } else if (type == "type4") {
+	        var val = dom.find(".exam-q-o-sel");
+	        val.each(function () {
+	          answer = $(this).text();
+	        });
+	        if (answer != "") {
+	          $(dom.find(".exam-my-a")).text(answer);
+	          saveAnswer(answer, qno);
+	        } else {
+	          alert("答案不能为空！");
+	        }
+	      } else {
+	        answer = $(dom.find(".exam-q-ipt")).val();
+	        if (answer != "") {
+	          $(dom.find(".exam-my-a")).text("已保存！");
+	          saveAnswer(answer, qno);
+	        } else {
+	          alert("答案不能为空！");
+	        }
+	      }
+	    });
+	  }
+	  //初始化交卷按钮
+	  function initHandInBtn() {
+		console.log(hash);
+	    $("#exam-hand-in").click(function () {
+	      var qno = $(this).attr("id").substr(9);
+	      $.ajax({
+	        type: "post",
+	        url: defaultUrl + "getFeedbackCacheList",
+	        data: {
+	          sNo: localStorage.getItem("sno"),
+	          hash:hash
+	        },
+	        success: function (j2) {
+	          if (JSON.parse(j2).data.length == 0) {
+	            if (confirm("未作答，难道你要交白卷?（是不是没有点保存？）")) {
+	              handIn();
+	            }
+	          } else if (JSON.parse(j2).data.length < $(".question-no").length) {
+	            if (confirm("还有题目未答！确认提交？（是不是没有点保存？）")) {
+	              handIn();
+	            }
+	          } else {
+	            if (confirm("确认提交？")) {
+	              handIn();
+	            }
+	          }
+
+	        },
+	        error: function () {
+	        }
+	      });
+	    });
+	  }
+	  //初始化答题卡
+	  function initQCard() {
+
+	    $("#type1 .q-type").text("单项选择题");
+	    $("#type2 .q-type").text("多项选择题");
+	    $("#type3 .q-type").text("填空题");
+	    $("#type4 .q-type").text("判断题");
+	    $("#type5 .q-type").text("简答题");
+
+	    $("#type-title-1").text("单项选择题");
+	    $("#type-title-2").text("多项选择题");
+	    $("#type-title-3").text("填空题");
+	    $("#type-title-4").text("判断题");
+	    $("#type-title-5").text("简答题");
+	    //答题卡题目类型点击
+	    $(".big_s").click(function () {
+	      //展开/关闭折叠答题卡
+	      if ($(this).next().css("display") == "none") {
+	        $(this).css({"font-weight": "bold"});
+	        $(this).next().slideDown(200);
+	        var q = $(this).attr("id").substr(11);
+	        $("html, body").animate({
+	          scrollTop: $("#type" + q).offset().top + 2
+	        }, {
+	          duration: 300,
+	          easing: "swing"
+	        });
+	      } else {
+	        $(this).css({"font-weight": "normal"});
+	        $(this).next().slideUp(200);
+	      }
+	    });
+	    //答题卡题目点击
+	    $(".question-no").click(function () {
+	      var q = $(this).attr("id");
+	      $("html, body").animate({
+	        scrollTop: $("#" + q + "-q").offset().top - 8
+	      }, {
+	        duration: 300,
+	        easing: "swing"
+	      });
+	    });
+	  }
+	  //初始化选项点击
+	  function initClickO() {
+	    $(".exam-q-o").click(function () {
+	      var type = $($(this).parents(".q-type-div")).attr("id");
+	      if (type == "type1" || type == "type4") {
+	        $(this).toggleClass("exam-q-o-sel").siblings().removeClass("exam-q-o-sel");
+	      } else if (type == "type2") {
+	        $(this).toggleClass("exam-q-o-sel");
+	      }
+	    });
+	  }
+
+	  //初始化已做题目
+	  function initHasDone() {
+	    $.ajax({
+	      type: "post",
+	      url: defaultUrl + "getExamsheetCacheList",
+	      data: {
+	        sNo: localStorage.getItem("sno"),
+	        eNo: GetQueryString("eNo")
+	      },
+	      success: function (j) {
+	        var json = JSON.parse(j).data;
+	        if (json.length > 0) {
+	          for (var i = 0; i < json.length; i++) {
+	            var qNo = json[i].qNo;
+	            var qAnswer = json[i].qAnswer;
+	            var dom = $("#save-qno-" + qNo).parents(".exam-question");
+	            var qType = $($("#save-qno-" + qNo).parents(".q-type-div")).attr("id");
+
+	            if (qType == "type1" || qType == "type2" || qType == "type4") {
+	              dom.find(".exam-my-a").text(qAnswer);
+	              var ss = dom.find(".exam-q-o");
+	              if (qType == "type1") {
+	                ss.each(function () {
+	                  if (qAnswer == $(this).attr("id").substr(9)) {
+	                    $(this).addClass("exam-q-o-sel");
+	                  }
+	                });
+	              }
+	              if (qType == "type2") {
+	                var aa = qAnswer.split("");
+	                ss.each(function () {
+	                  for (var ia = 0; ia < aa.length; ia++) {
+	                    if (aa[ia] == $(this).attr("id").substr(9)) {
+	                      $(this).addClass("exam-q-o-sel");
+	                    }
+	                  }
+	                });
+	              }
+	              if (qType == "type4") {
+	                ss.each(function () {
+	                  if (qAnswer == $(this).text()) {
+	                    $(this).addClass("exam-q-o-sel");
+	                  }
+	                });
+	              }
+	            } else if (qType == "type3" || qType == "type5") {
+	              $(dom.find(".exam-q-ipt")).val(qAnswer);
+	              dom.find(".exam-my-a").text("已保存！");
+	            } else {
+	            }
+	            $("#" + $(dom).attr("id").substr(0, 8)).addClass("question-no-done");
+	          }
+	        }
+	      },
+	      error: function () {
+	      }
+	    });
+	  }
+
+	  //进行保存
+	  function saveAnswer(answer, qno) {
+	    //console.log(answer + qno + localStorage.getItem("sno") + GetQueryString("eNo"));
+	    $.ajax({
+	      type: "post",
+	      url: defaultUrl + "addFeedbacksheetCache",
+	      data: {
+	        sNo: localStorage.getItem("sno"),
+	        qNo: qno,
+	        qAnswer: answer,
+	        hash:hash
+	      },
+	      success: function () {
+	        var dom = $("#save-qno-" + qno).parents(".exam-question");
+	        $("#" + $(dom).attr("id").substr(0, 8)).addClass("question-no-done");
+	      },
+	      error: function () {
+	        alert("保存失败！");
+	      }
+	    });
+	  }
+	  //进行交卷
+	  function handIn() {
+	    $.ajax({
+	      type: "post",
+	      url: defaultUrl + "addFeedbacksheet",
+	      data: {
+	        sNo: localStorage.getItem("sno"),
+	       	hash:hash,
+	      },
+	      success: function (j) {
+	    	  alert("提交成功");
+	    	  window.location.href = "index.html";
+	      },
+	      error: function () {
+	    	  alert("error");
+	      }
+	    });
+	  }
+	function sin(obj){
+		  $(obj).siblings("div").children("span").addClass("active");
+		  $(obj).parents("div").siblings("div").find("span").removeClass("active");
+	  }
+	
+	function submit(){
+		  var datamap = new Map();
+	      for(var i = 0; i < feedbackjson.length; ++i){
+			  var val = $("input[name = 'question" + i + "\'" + "]:checked").val();
+			  if(typeof(val) == "undefined"){
+				  alert("您有题目尚未完成，请检查后提交");
+				  return;
+			  }
+			  datamap.set(feedbackjson[i].rid,val);
+		 }
+	      $.ajax({
+	    	 type:'post',
+	    	 url:defaultUrl + "updateFeedbackScore",
+	    	 data:{
+	    		 jsondata:mapToJson(datamap),
+	    	 },
+	    	 success:function(j){
+	    		 alert("提交成功");
+	    	 },
+	    	 error:function(){
+	    		 alert("error");
+	    	 }
+	      });
+	      
+	  }
+	
+	function strMapToObj(strMap){
+		  let obj= Object.create(null);
+		    for (let[k,v] of strMap) {
+		      obj[k] = v;
+		    }
+		    return obj;
+	  }
+	  
+	  function mapToJson(map){
+		  return JSON.stringify(strMapToObj(map))
+	  }
+</script>
+</body>
+</html>

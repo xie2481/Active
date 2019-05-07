@@ -1,0 +1,311 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生动你的课程</title>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+  <style>
+    /*轮播图相关*/
+    .slider-box {
+      margin: 0px auto;
+      width: 1080px;
+      height: 375px;
+      overflow: hidden;
+    }
+
+    .slider {
+      display: block;
+      height: 100%;
+    }
+
+    .slider li {
+      cursor: pointer;
+      height: 100%;
+      display: inline-block;
+      background-size: cover;
+      background-position: center;
+      border-radius: 3px;
+    }
+
+    .slider-preview {
+      position: absolute;
+      display: block;
+      padding: 0 2px;
+      z-index: 9;
+      background-color: rgba(0, 0, 0, .5);
+      border-radius: 0 0 3px 3px;
+    }
+
+    .slider-preview li {
+      cursor: pointer;
+      height: 100%;
+      display: inline-block;
+      padding: 4px 0;
+      margin-bottom: -6px;
+    }
+
+    .preview-select {
+      filter: grayscale(0) !important;
+      -webkit-filter: grayscale(0) !important;
+      -moz-filter: grayscale(0) !important;
+      -o-filter: grayscale(0) !important;
+    }
+
+    .slider-preview li div {
+      margin: 0 2px;
+      background-size: cover;
+      background-position: center;
+      filter: grayscale(1);
+      -webkit-filter: grayscale(1);
+      -moz-filter: grayscale(1);
+      -o-filter: grayscale(1);
+    }
+
+    .slider-preview li div:hover {
+      filter: grayscale(0);
+      -webkit-filter: grayscale(0);
+      -moz-filter: grayscale(0);
+      -o-filter: grayscale(0);
+    }
+  </style>
+</head>
+<body>
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right"></div>
+  </div>
+</div>
+<!--导航-->
+<div class="navigation">
+  <div class="nav">
+    <a href="index.html">
+      <img style="margin-bottom:5px;" src="res/logo-title.png" width="160" height="40"/>
+    </a>
+    <ul></ul>
+    <div class="search">
+      <div class="search-input">
+        <input type="text" placeholder="搜索全站">
+      </div>
+      <div class="search-btn">
+        <i class="fa fa-search" style="color: white;padding: 0 5px;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!--待加载内容-->
+<span id="load-content">
+<!--轮播图-->
+<div style="height: 15px;"></div>
+<div class="slider-box">
+  <ul class="slider">
+    <li style="background-image: url(res/2.jpg)">
+    </li><li style="background-image: url(res/3.jpg)">
+    </li><li style="background-image: url(res/4.jpg)">
+    </li><li style="background-image: url(res/5.jpg)">
+    </li><li style="background-image: url(res/6.jpg)">
+    </li><li style="background-image: url(res/8.jpg)">
+    </li><li style="background-image: url(res/7.jpg)">
+    </li>
+  </ul>
+  <ul class="slider-preview"></ul>
+</div>
+<span id="slider-last" style="display: none">上一页</span>
+<span id="slider-next" style="display: none">下一页</span>
+<!--内容-->
+<!--教学视频-->
+<div class="content" style="margin-top: 15px;">
+  <div class="page-title">
+    ■ 录像教学
+    <a href="video.html" class="page-subtitle">
+      查看更多 &gt;
+    </a>
+  </div>
+  <div class="page-content" id="new-video"></div>
+</div>
+<!--自学材料-->
+<div class="content" style="margin-top: 15px;">
+  <div class="page-title">
+    ■ 自学材料
+    <a href="document.html" class="page-subtitle">
+      查看更多 &gt;
+    </a>
+  </div>
+  <div class="page-content" id="doc"></div>
+</div>
+<!--算法动画-->
+<div class="content" style="margin-top: 15px;">
+  <div class="page-title">
+    ■ 算法动画
+    <a href="flash.html" class="page-subtitle">
+      查看更多 &gt;
+    </a>
+  </div>
+  <div class="page-content" id="new-flash"></div>
+</div>
+<!--练习模块-->
+<div class="content" style="margin-top: 15px;">
+  <div class="page-title">
+    ■ 练习模块
+    <a href="training.html" class="page-subtitle">
+      查看更多 &gt;
+    </a>
+  </div>
+  <div class="page-content" id="training"></div>
+</div>
+<!--在线测试-->
+<div class="content" style="margin-top: 15px;">
+  <div class="page-title">
+    ■ 在线测试
+    <a href="test.html" class="page-subtitle">
+      查看更多 &gt;
+    </a>
+  </div>
+  <div class="page-content" id="exam"></div>
+</div>
+<!--页尾-->
+<footer>
+  <div class="content">
+    <div class="foot-left">
+      <img height="55" src="res/logo2.png">
+    </div>
+    <div align="left" style="position:absolute; top:0px; left:125px;">
+      生动你的大学生活！<br>Alpha_0.0.1_2016-01-22
+    </div>
+    <a class="foot-link" href="introduce.html">平台介绍</a>|
+    <a class="foot-link" href="about.html">关于生动</a>|
+    <a class="foot-link" href="contact.html">联系我们</a>|
+    <a class="foot-link" href="mobile/index.html">生动网移动版</a>
+    <br>Copyright &copy; 2016 生动网页 All Rights Reserved.
+    <div class="foot-right">
+      皖ICP备16001596号<br>皖公网安备12345678987654321号
+    </div>
+  </div>
+</footer>
+</span>
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script src="js/slider.js" charset="gbk"></script>
+<script type="text/javascript">
+  $(function () {
+    nav();
+    init();
+  });
+  function init() {
+    initVideo();
+    initDoc();
+    initFlash();
+    initTrain();
+    initExam();
+  }
+  function initVideo() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getVideoListByTime",
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        if (json.length == 0) {
+          $("#new-video").append("<div class='no-tip'>暂无</div>");
+          return;
+        }
+        for (var i = 0; i < json.length; i++) {
+          $('#new-video').append("<div class=\"li\"><div class=\"li-content\"><a href=\"v_show.html?vNo=" + json[i].vno + "\"><div class=\"li-img\" style=\"background-image: url(" + defaultUrl + json[i].vimg + ");\"></div><div class=\"li-title\">" + json[i].vname + "</div></a><div class=\"li-count\">播放：" + json[i].vcount + "</div><div class=\"li-count\">上传时间：" + (json[i].vtime.year + 1900) + "-" + (json[i].vtime.month + 1 ) + "-" + json[i].vtime.date + "</div></div></div>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function initDoc() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getDocListByTime",
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        if (json.length == 0) {
+          $("#doc").append("<div class='no-tip'>暂无</div>");
+          return;
+        }
+        for (var i = 0; i < json.length; i++) {
+          $("#doc").append("<div class=\"document\"><i class=\"fa fa-file-" + json[i].docType + "-o doc-icon\"></i><div class=\"doc-content\"><div class=\"doc-title\">" + json[i].docName + "</div><div class=\"doc-subtitle\">上传时间：" + (json[i].docTime.year + 1900) + "-" + (json[i].docTime.month + 1 ) + "-" + json[i].docTime.date + "&nbsp;&nbsp;&nbsp;&nbsp;<a href='t_view.html'>" + json[i].tname + "</a></div></div><a href=" + json[i].docPath + " class=\"doc-download-btn\"> 下载</a></div>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function initFlash() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getFlashListByTime",
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        if (json.length == 0) {
+          $("#new-flash").append("<div class='no-tip'>暂无</div>");
+          return;
+        }
+        for (var i = 0; i < json.length; i++) {
+          $('#new-flash').append("<div class=\"li\"><div class=\"li-content\"><a href=\"f_show.html?vNo=" + json[i].vno + "\"><div class=\"li-img\" style=\"background-image: url(" + defaultUrl + json[i].vimg + ");\"></div><div class=\"li-title\">" + json[i].vname + "</div></a><div class=\"li-count\">播放：" + json[i].vcount + "</div><div class=\"li-count\">上传时间：" + (json[i].vtime.year + 1900) + "-" + (json[i].vtime.month + 1 ) + "-" + json[i].vtime.date + "</div></div></div>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function initTrain() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getTrainingListByTime",
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        if (json.length == 0) {
+          $("#training").append("<div class='no-tip'>暂无</div>");
+          return;
+        }
+        for (var i = 0; i < json.length; i++) {
+          $("#training").append("<div class=\"training\"><div class=\"doc-content\"><div class=\"doc-title\">" + json[i].trainName + "</div><div class=\"tag\">上传时间：" + (json[i].trainTime.year + 1900) + "-" + (json[i].trainTime.month + 1 ) + "-" + json[i].trainTime.date + "</div><div class=\"tag\">包含题目：" + json[i].cou + " 道</div></div><a href=\"train_show.html?trainNo=" + json[i].trainNo + "\" class=\"doc-download-btn\">练习</a></div>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function initExam() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getExamListByTime",
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        if (json.length == 0) {
+          $("#exam").append("<div class='no-tip'>暂无</div>");
+          return;
+        }
+        for (var i = 0; i < json.length; i++) {
+          $("#exam").append("<div class=\"training\"><div class=\"doc-content\"><div class=\"doc-title\">" + json[i].eName + "</div><div class=\"tag\">上传时间：" + (json[i].eTime.year + 1900) + "-" + (json[i].eTime.month + 1 ) + "-" + json[i].eTime.date + "</div><div class=\"tag\">包含题目：" + json[i].cou + " 道</div></div><a href=\"test_confirm.html?eNo=" + json[i].eNo + "\" class=\"doc-download-btn\">考试</a></div>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+</script>
+</body>
+</html>

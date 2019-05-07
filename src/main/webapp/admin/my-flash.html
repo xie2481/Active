@@ -1,0 +1,53 @@
+<table class="table" id="f-table"></table>
+
+<script type="text/javascript">
+  function initThis() {
+    initMyFlash();
+  }
+  function initMyFlash() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getFlashsByTno",
+      data: {
+        tNo: localStorage.getItem("tno")
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        $("#my-flash-div-content #f-table").append("<tr class=\"table-head\"><td>视频编号</td><td>视频名称</td><td>封面图象</td><td>视频地址</td><td>所属章节</td><td>播放次数</td><td>上传时间</td><td>操作</td></tr>");
+        for (var i = 0; i < json.length; i++) {
+          $("#my-flash-div-content #f-table").append("<tr id='f-tr" + i + "'></tr>");
+          $("#my-flash-div-content #f-tr" + i).append("<td>" + json[i].vno + "</td>");
+          $("#my-flash-div-content #f-tr" + i).append("<td>" + json[i].vname + "</td>");
+          $("#my-flash-div-content #f-tr" + i).append("<td>" + json[i].vimg + "</td>");
+          $("#my-flash-div-content #f-tr" + i).append("<td>" + json[i].vaddress + "</td>");
+          $("#my-flash-div-content #f-tr" + i).append("<td>" + getChaName(json[i].chano) + "</td>");
+          $("#my-flash-div-content #f-tr" + i).append("<td>" + json[i].vcount + "</td>");
+          $("#my-flash-div-content #f-tr" + i).append("<td>" + (json[i].vtime.year + 1900) + "-" + (json[i].vtime.month + 1 ) + "-" + json[i].vtime.date + "</td>");
+          $("#my-flash-div-content #f-tr" + i).append("<td class='operate-td'><i class='fa fa-remove' title='删除' onclick='deleteVideo(" + json[i].vno + ")'></i></td>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function deleteVideo(vno) {
+    if (confirm("确认要删除此视频？")) {
+      $.ajax({
+        type: "post",
+        url: defaultUrl + "delVideo",
+        data: {
+          vNo: vno
+        },
+        success: function () {
+          $("#my-flash-div-content #f-table").empty();
+          initMyFlash();
+          alert("删除成功！")
+        },
+        error: function () {
+          alert("error");
+        }
+      });
+    }
+  }
+</script>

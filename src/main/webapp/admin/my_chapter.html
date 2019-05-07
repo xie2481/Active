@@ -1,0 +1,180 @@
+<div class = "form-ipt">
+	<div class = "til">已有章节</div>
+	<div class = "con" id = "new-chaptermanage-div-content">
+	  <select name="chano1" class="chapter1" onclick="getNext(this.value,'new-chaptermanage',2);"></select>
+      <select name="chano2" class="chapter2" onclick="getNext(this.value,'new-chaptermanage',3);"></select>
+      <select name="chano3" class="chapter3"></select>
+	</div>
+</div>
+<div class = "form-ipt">
+	<div onclick="addFirstChapter()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    添加一级章节
+  </div>
+  <div onclick="addSecondChapter()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    添加二级章节
+  </div>
+   <div onclick="addThirdChapter()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    添加三级章节
+  </div>
+</div>
+<br>
+<div class = "form-ipt" id = "firstChapter" style = "display:none">
+	<div class = "til">请输入标题名称</div>
+	<div class = "con">
+		<input type = "text" name = "firstChapter" id = "firstInput">
+	</div>
+	<br>
+	<br>
+	<div onclick="submitFirstChapter()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    确定提交
+  </div>
+</div>
+<div id = "secondChapter" style = "display:none">
+	<div class = "form-ipt">
+		<div class = "til">请选择第一级章节</div>
+		<div class = "con" id = "second-chapter-div-content">
+			<select name="second-chano1" class="chapter1"></select>
+		</div>
+	</div>
+	<br>
+	<div class = "form-ipt">
+		<div class = "til">请输入章节的名称</div>
+		<div class = "con">
+			<input type = "text" name = "secondChapter" id = "secondInput">
+		</div>
+	</div>
+	<br>
+	<div onclick="submitSecondChapter()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    确定提交
+  </div>
+</div>
+<div id = "thirdChapter" style = "display:none">
+	<div class = "form-ipt">
+		<div class = "til">请选择章节</div>
+		<div class = "con" id = "third-chapter-div-content">
+			<select name="third-chano1" class="chapter1" onclick="getNext(this.value,'third-chapter',2);"></select>
+      		<select name="third-chano2" class="chapter2"></select>
+		</div>
+	</div>
+	<br>
+	<div class = "form-ipt">
+		<div class = "til">请输入章节的名称</div>
+		<div class = "con">
+			<input type = "text" name = "thirdChapter" id = "thirdInput">
+		</div>
+	</div>
+	<br>
+	<div onclick="submitThirdChapter()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    确定提交
+  </div>
+</div>
+<script src = "js/public.js"></script>
+<script>
+	function initThis(){
+		initChapter(0,"new-chaptermanage",1);
+	}
+	function addFirstChapter(){
+		$("#secondChapter").slideUp();
+		$("#thirdChapter").slideUp();
+		$("#firstChapter").slideDown();
+	}
+	
+	function submitFirstChapter(){
+		var chpName = $("input[name = 'firstChapter']").val();
+		if(chpName == ""){
+			alert("章节名不能为空");
+			return;
+		}
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "addFirstChapter",
+			async:false,
+			data:{
+				chpName:chpName
+			},
+			success:function(){
+				alert("提交成功");
+				initChapter(0,"new-chaptermanage",1);
+				empty();//清空已有章节的选项
+				$("#firstChapter").slideUp();
+				$("input[name = 'firstChapter']").val("");
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	
+	function empty(){
+		for(var i = 2; i <= 3; ++i)
+			$(".chapter" + i).empty();
+	}
+	
+	function addSecondChapter(){
+		$("#firstChapter").slideUp();
+		$("#thirdChapter").slideUp();
+		$("#secondChapter").slideDown();
+		initChapter(0,"second-chapter",1);
+	}
+	
+	function submitSecondChapter(){
+		var chpName = $("input[name = 'secondChapter']").val();
+		if(chpName == ""){
+			alert("章节名不能为空");
+			return;
+		}
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "addSecondChapter",
+			async:false,
+			data:{
+				chaNoLast:$("select[name = 'second-chano1']").val(),
+				chpName:chpName
+			},
+			success:function(){
+				alert("提交成功");
+				initChapter(0,"new-chaptermanage",1);
+				empty();
+				$("#secondChapter").slideUp();  
+				$("input[name = 'secondChapter']").val("");
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	
+	function addThirdChapter(){
+		$("#firstChapter").slideUp();
+		$("#secondChapter").slideUp();
+		$("#thirdChapter").slideDown();
+		initChapter(0,"third-chapter",1);
+	}
+	
+	function submitThirdChapter(){
+		var chpName = $("input[name = 'thirdChapter']").val();
+		if(chpName == ""){
+			alert("章节名不能为空");
+			return;
+		}
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "addThirdChapter",
+			async:false,
+			data:{
+				chaNoLast:$("select[name = 'third-chano2']").val(),
+				chpName:chpName
+			},
+			success:function(){
+				alert("提交成功");
+				initChapter(0,"new-chaptermanage",1);
+				empty();
+				$("#thirdChapter").slideUp();  
+				$("input[name = 'thirdChapter']").val("");
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+</script>

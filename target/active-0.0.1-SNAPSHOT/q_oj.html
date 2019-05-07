@@ -1,0 +1,95 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>生动-练习ing</title>
+</head>
+<link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+  <style>
+  	#question{
+  		padding-top:10px;	
+  	}
+  	#question-bar{
+  		height:25px;
+  	}
+   	.title{
+   		font-size:24px;
+   		color:orange
+   	}
+   	.describe{
+   		height:280px;
+   		padding-left:30px;
+   	}
+   	.ojfoot{
+   		margin-top:8px;
+   		border-top:1px solid #000;	
+   		height:45px;
+   	}
+   	.author{
+   		padding-top:13px;
+   		padding-left:10px;
+   		font-style:italic;
+   	}
+   	 ::-webkit-scrollbar {
+      width: 6px;
+      background-color: #fff;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background-color: #555;
+      border-radius: 3px;
+    }
+
+    ::-webkit-scrollbar-thumb:hover {
+      background-color: #777;
+    }
+  </style>
+<body>
+<!-- 待加载内容 -->
+<div id = "question-bar">
+   	 	<div class = "title"></div>
+</div>
+<div class = "describe">
+	<div class = "title" style = "padding-top:10px">题目描述:</div>
+	<div id = "question"></div>
+</div>
+<div class = "ojfoot">
+	<div class = "author">题目提供者:</div>
+</div>
+</body>
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script src = "js/marked.min.js"></script>
+<script>
+	$(function(){
+		init();
+	});
+	
+	function init(){
+		 initTitle();
+		 initOJQuestion();
+	}
+	function initTitle(){
+		$("#question-bar .title").append(window.parent.trainNo + "、" + window.parent.title);
+	}
+	function initOJQuestion(){
+		 $.ajax({
+			url:defaultUrl + "getOJQuestion",
+			type:"post",
+			data:{
+				title:window.parent.title
+			},
+			success:function(j){
+				$("#question").append(marked(j));
+			},
+			error:function(){
+				//alert("error");
+			}
+		 });
+	  }
+</script>
+</html>

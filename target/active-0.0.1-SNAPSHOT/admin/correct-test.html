@@ -1,0 +1,154 @@
+﻿<table class="table" id="correct-test-table"></table>
+
+<script type="text/javascript">
+  var pageName = "correct-test";
+  function initThis() {
+    initAllExam();
+  }
+  function initAllExam() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getExamsNeedCorrect",
+      data: {
+        tNo: localStorage.getItem("tno")
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        $("#correct-test-div-content #correct-test-table").append("<tr class=\"table-head\"><td>试卷编号</td><td>试卷名称</td><td>开考时间</td><td>有效期至</td><td>考试时间</td><td>总分</td><td>答卷详情</td><td>批改详情</td><td>操作</td></tr>");
+
+        var stuNum = 0;
+        $.ajax({
+          type: "post",
+          async: false,
+          url: defaultUrl + "getStuNum",
+          success: function (j) {
+            stuNum = j;
+          },
+          error: function () {
+            alert("error");
+          }
+        });
+
+        for (var i = 0; i < json.length; i++) {
+
+          var stuDoExamNum = 0;
+          $.ajax({
+            type: "post",
+            async: false,
+            url: defaultUrl + "getStuDoExamNum",
+            data: {
+              eNo: json[i].eNo
+            },
+            success: function (j) {
+              stuDoExamNum = j;
+            },
+            error: function () {
+              alert("error");
+            }
+          });
+
+          var hasCorrect = 0;
+          $.ajax({
+            type: "post",
+            async: false,
+            url: defaultUrl + "getToCorrectNum",
+            data: {
+              eNo: json[i].eNo
+            },
+            success: function (j) {
+              hasCorrect = j;
+            },
+            error: function () {
+              alert("error");
+            }
+          });
+
+          $("#correct-test-div-content #correct-test-table").append("<tr id='correct-test-tr" + i + "'></tr>");
+          $("#correct-test-div-content #correct-test-tr" + i).append("<td>" + json[i].eNo + "</td>");
+          $("#correct-test-div-content #correct-test-tr" + i).append("<td>" + json[i].eName + "</td>");
+          $("#correct-test-div-content #correct-test-tr" + i).append("<td>" + (json[i].eBeginTime.year + 1900) + "-" + (json[i].eBeginTime.month + 1 ) + "-" + json[i].eBeginTime.date + "</td>");
+          $("#correct-test-div-content #correct-test-tr" + i).append("<td>" + (json[i].eEndTime.year + 1900) + "-" + (json[i].eEndTime.month + 1 ) + "-" + json[i].eEndTime.date + "</td>");
+          $("#correct-test-div-content #correct-test-tr" + i).append("<td>" + json[i].eDuration + "</td>");
+          $("#correct-test-div-content #correct-test-tr" + i).append("<td>" + json[i].eMark + "</td>");
+          $("#correct-test-div-content #correct-test-tr" + i).append("<td>" + stuDoExamNum + "/" + stuNum + "</td>");
+          $("#correct-test-div-content #correct-test-tr" + i).append("<td><span id='has-correct'>" + hasCorrect + "</span>/" + stuDoExamNum + "</td>");
+          $("#correct-test-div-content #correct-test-tr" + i).append("<td class='operate-td'><i class='fa fa-users' title='考试学生' onclick='examStudent(\"" + json[i].eNo + "\")'></i>&nbsp;&nbsp;<i class='fa fa-check-square-o' title='立即批改' onclick='examDetail(\"" + json[i].eNo + "\",\"" + stuDoExamNum + "\",\"" + hasCorrect + "\")'></i></td>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function examStudent(eNo) {
+    pop("<table class=\"table\" id=\"correct-test-table-stu\"></table>");
+    $("#correct-test-table-stu").append("<tr class=\"table-head\"><td>试卷编号</td><td>试卷名称</td><td>开考时间</td><td>有效期至</td><td>考试时间</td><td>总分</td><td>答卷详情</td><td>批改详情</td><td>操作</td></tr>");
+  }
+  function examDetail(eNo, stuDoExamNum, hasCorrect) {
+    var sNo;
+    $.ajax({
+      type: "post",
+      async: false,
+      url: defaultUrl + "getToCorrectNum",
+      data: {
+        eNo: eNo
+      },
+      success: function (j) {
+        hasCorrect = j;
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+    $("#has-correct").text(hasCorrect);
+    if (stuDoExamNum == hasCorrect) {
+      alert("无需继续批改！");
+      return;
+    }
+    $.ajax({
+      type: "post",
+      async: false,
+      url: defaultUrl + "getFirstSno",
+      data: {
+        eNo: eNo
+      },
+      success: function (j) {
+        sNo = j;
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+    pop("<iframe id='correct-div' src=\"../test_correct.html?eNo=" + eNo + "&sNo=" + sNo + "\"></iframe><div class='pop-close2' id='save-next'>保存并批改下一张</div>");
+    $("#save-next").click(function () {
+      for (var i = 0; i < $("#correct-div").contents().find(".exam-q-correct").length; i++) {
+        var mark = $($("#correct-div").contents().find(".exam-q-correct").get(i)).val();
+        mark = mark == "" ? "-1" : mark;
+        if (parseInt(mark) <= -1) {
+          alert("分数不能为负值!");
+          return;
+        }
+        var qNo = $($("#correct-div").contents().find(".exam-q-correct").get(i)).attr("id").substr(15);
+        $.ajax({
+          type: "post",
+          async: false,
+          url: defaultUrl + "correctExam",
+          data: {
+            sNo: sNo,
+            eNo: eNo,
+            qNo: qNo,
+            tsIsRight: mark
+          },
+          success: function (j) {
+          },
+          error: function () {
+            alert("error");
+          }
+        });
+      }
+      $(".pop-close").click();
+      examDetail(eNo, stuDoExamNum, hasCorrect);
+    });
+  }
+
+</script>

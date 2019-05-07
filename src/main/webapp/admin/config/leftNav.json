@@ -1,0 +1,225 @@
+{
+  "config": [
+    {
+      "name": "录像教学管理",
+      "href": "#",
+      "icon": "video-camera",
+      "child": [
+        {
+          "name": "上传新录像",
+          "href": "#new-video",
+          "icon": "upload",
+          "child": []
+        },
+        {
+          "name": "我的录像",
+          "href": "#my-video",
+          "icon": "video-camera",
+          "child": []
+        }
+      ]
+    },
+    {
+      "name": "自学材料管理",
+      "href": "#",
+      "icon": "file",
+      "child": [
+        {
+          "name": "上传自学材料",
+          "href": "#new-doc",
+          "icon": "upload",
+          "child": []
+        },
+        {
+          "name": "我的自学材料",
+          "href": "#my-doc",
+          "icon": "file",
+          "child": []
+        }
+      ]
+    },
+    {
+      "name": "算法动画管理",
+      "href": "#",
+      "icon": "youtube-play",
+      "child": [
+        {
+          "name": "上传算法动画",
+          "href": "#new-flash",
+          "icon": "upload",
+          "child": []
+        },
+        {
+          "name": "我的算法动画",
+          "href": "#my-flash",
+          "icon": "youtube-play",
+          "child": []
+        }
+      ]
+    },
+    {
+      "name": "题库管理",
+      "href": "#",
+      "icon": "question-circle",
+      "child": [
+        {
+          "name": "新增题目",
+          "href": "#new-q",
+          "icon": "plus-square",
+          "child": []
+        },
+        {
+          "name":"新增编程题",
+          "href":"#new-ojq",
+          "icon":"plus-square",
+          "child":[]
+        },
+        {
+          "name": "题目浏览",
+          "href": "#all-q",
+          "icon": "question-circle",
+          "child": []
+        }
+      ]
+    },
+    {
+      "name": "练习管理",
+      "href": "#",
+      "icon": "clipboard",
+      "child": [
+        {
+          "name": "新增练习",
+          "href": "#new-train",
+          "icon": "plus-square",
+          "child": []
+        },
+        {
+          "name": "我的练习",
+          "href": "#all-train",
+          "icon": "clipboard",
+          "child": []
+        }
+      ]
+    },
+    {
+       "name": "预习管理",
+       "href": "#",
+       "icon": "clipboard",
+       "child":[
+        {
+          "name": "预习要求发布",
+          "href":"#my_previewRequire",
+          "icon":"upload",
+          "child":[]
+        },
+        {
+          "name": "预习知识点",
+          "href": "#",
+          "icon":"clipboard",
+          "child": []
+        }
+       ]
+    },
+    {
+      "name": "网上测试管理",
+      "href": "#",
+      "icon": "file-text-o",
+      "child": [
+        {
+          "name": "新增测试",
+          "href": "#new-test",
+          "icon": "plus-square",
+          "child": []
+        },
+        {
+          "name": "我的测试",
+          "href": "#my-test",
+          "icon": "file-text-o",
+          "child": []
+        },
+        {
+          "name": "测试批改",
+          "href": "#correct-test",
+          "icon": "check",
+          "child": []
+        }
+      ]
+    },
+    {
+      "name":"目录管理",
+      "href":"#",
+      "icon":"file-text-o",
+      "child":[
+        {
+          "name":"章节管理",
+          "href":"#my_chapter",
+          "icon":"file",
+          "child":[]
+        },
+        {
+          "name":"知识点管理",
+          "href":"#my_knowledge",
+          "icon":"file",
+          "child":[]
+        }
+      ]
+    },
+    {
+      "name":"图表分析",
+      "href": "#",
+      "icon": "question-circle",
+      "child":[
+        {
+          "name":"图表生成",
+          "href":"#my-chart",
+          "icon":"file-text-o",
+          "child":[]
+        }
+      ]
+    },
+    {
+      "name":"学生信息管理",
+      "href":"#",
+      "icon":"file-text-o",
+      "child":[
+        {
+          "name":"班级管理",
+          "href":"#my-class",
+          "icon":"user",
+          "child":[]
+        },
+          {
+            "name":"信息上传",
+            "href":"#my-studentUpload",
+            "icon":"upload",
+            "child":[]
+          },
+          {
+            "name" : "学生管理",
+            "href":"#my-student",
+            "icon":"file",
+            "child" : []
+          }
+      ]
+    },
+    {
+      "name": "其他模块",
+      "href": "#",
+      "icon": "puzzle-piece",
+      "child": [
+        {
+          "name": "个人信息",
+          "href": "#info",
+          "icon": "user",
+          "child": []
+        },
+        {
+          "name": "密码修改",
+          "href": "#pwd",
+          "icon": "lock",
+          "child": []
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,245 @@
+﻿<div class="form-ipt">
+  <div class="til">试卷号</div>
+  <div class="con">
+    <input name="e-no" placeholder="自定义试卷编号，如 2016-a"/>
+  </div>
+</div>
+<div class="form-ipt">
+  <div class="til">名称</div>
+  <div class="con">
+    <input name="e-title" placeholder="点击输入试卷名称"/>
+  </div>
+</div>
+<div class="form-ipt">
+  <div class="til">时长（分钟）</div>
+  <div class="con">
+    <input name="e-duration" placeholder="点击输入试卷时长"/>
+  </div>
+</div>
+<div class="form-ipt">
+  <div class="til">总分</div>
+  <div class="con">
+    <input name="e-mark" placeholder="点击输入试卷总分"/>
+  </div>
+</div>
+<div class="form-ipt">
+  <div class="til">开始时间</div>
+  <div class="con">
+    <input name="e-begin-time" type="datetime-local"/>
+  </div>
+</div>
+<div class="form-ipt">
+  <div class="til">结束时间时间</div>
+  <div class="con">
+    <input name="e-end-time" type="datetime-local"/>
+  </div>
+</div>
+
+<div class="form-ipt" id="add-q-option-panel">
+  <div class="til">题目</div>
+  <div class="con">
+    <table class="table" id="new-test-now-table"></table>
+  </div>
+  <br>
+
+  <div onclick="addTestQuestion()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    添加题目
+  </div>
+</div>
+
+<div class="form-ipt">
+  <button class="til submit-btn" type="button" onclick="addTest()">立即新增</button>
+  <button type="reset" id="reset-question">重置</button>
+</div>
+
+<div class="alert-bg2" id="new-test-addQ" style="display: none">
+  <div class="pop" style="overflow: auto">
+    <div class="toolbar">
+      题型：
+      <select name="q-type">
+        <option value="-1">不限</option>
+        <option value="1">单项选择</option>
+        <option value="2">多项选择</option>
+        <option value="3">填空</option>
+        <option value="4">判断</option>
+        <option value="5">简答</option>
+      </select>
+      &nbsp;&nbsp;章节：
+      <select name="chano1" class="chapter1" onclick="getNext(this.value,'new-test',2);">
+      </select>
+      <select name="chano2" class="chapter2" onclick="getNext(this.value,'new-test',3);">
+        <option value="-1">不限</option>
+      </select>
+      <select name="chano3" class="chapter3">
+        <option value="-1">不限</option>
+      </select>
+      &nbsp;&nbsp;难度：
+      <select name="q-difficulty">
+        <option value="-1">不限</option>
+        <option value="1">简单</option>
+        <option value="2">中等</option>
+        <option value="3">困难</option>
+      </select>
+      &nbsp;&nbsp;
+      <button class="toolbar-filter" onclick="newTestDoQuestionFilter()">筛选</button>
+    </div>
+    <table class="table" id="new-test-table"></table>
+
+    <script type="text/javascript">
+
+    </script>
+  </div>
+  <div class='pop-close2'>
+    <i class='fa fa-close'></i>
+  </div>
+</div>
+
+<script type="text/javascript">
+  var pageName = "new-test";
+
+  function initThis() {
+    initChapter(0, pageName, 1);
+    initNewTestAllQ(-1, -1, -1);
+    initNewTestNowQ(-1, -1, -1);
+    $("#new-test-div-content .chapter1").prepend("<option value=\"-1\">不限</option>");
+  }
+  //  新增试卷
+  function addTest() {
+    var eNo = $("#new-test-div-content [name=e-no]").val();
+    var eName = $("#new-test-div-content [name=e-title]").val();
+    var eTitle = $("#new-test-div-content [name=e-title]").val();
+    var eDuration = $("#new-test-div-content [name=e-duration]").val();
+    var eMark = $("#new-test-div-content [name=e-mark]").val();
+    var eBeginTime = $("#new-test-div-content [name=e-begin-time]").val();
+    var eEndTime = $("#new-test-div-content [name=e-end-time]").val();
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "addExam",
+      data: {
+        eNo: eNo,
+        eName: eName,
+        tNo: localStorage.getItem("tno"),
+        eTitle: eTitle,
+        eDuration: eDuration,
+        eMark: eMark,
+        eBeginTime: eBeginTime,
+        eEndTime: eEndTime
+      },
+      success: function () {
+        var questions = $(".marks");
+        for (var i = 0; i < questions.length; i++) {
+          var qNo = $(questions.get(i)).attr("id").substr(6);
+          var qMark = $(questions.get(i)).val();
+          $.ajax({
+            type: "post",
+            url: defaultUrl + "addExamQ",
+            data: {
+              eNo: eNo,
+              qNo: qNo,
+              qMark: qMark
+            },
+            success: function () {
+            },
+            error: function () {
+              alert("error");
+            }
+          });
+        }
+        alert("添加成功！");
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  //  增加题目
+  function addTestQuestion() {
+    $("#new-test-addQ").fadeIn();
+    $(".pop-close2").click(function () {
+      $(this).parent().hide();
+    });
+  }
+  function initNewTestAllQ(qType, chaNo, qDifficulty) {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getQuestions",
+      data: {
+        qType: qType,
+        chaNo: chaNo,
+        qDifficulty: qDifficulty
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        $("#new-test-div-content #new-test-table").append("<tr class=\"table-head\"><td>题目编号</td><td>题目标题</td><td>题目类型</td><td>题目难度</td><td>所属章节</td><td>参考答案</td><td>操作</td></tr>");
+        for (var i = 0; i < json.length; i++) {
+          $("#new-test-div-content #new-test-table").append("<tr id='new-test-tr" + i + "'></tr>");
+          $("#new-test-div-content #new-test-tr" + i).append("<td>" + json[i].qNo + "</td>");
+          $("#new-test-div-content #new-test-tr" + i).append("<td>" + json[i].qTitle + "</td>");
+          $("#new-test-div-content #new-test-tr" + i).append("<td>" + getQTypeName(json[i].qType) + "</td>");
+          $("#new-test-div-content #new-test-tr" + i).append("<td>" + getQDifficultyName(json[i].qDifficulty) + "</td>");
+          $("#new-test-div-content #new-test-tr" + i).append("<td>" + getChaName(json[i].chaNo) + "</td>");
+          $("#new-test-div-content #new-test-tr" + i).append("<td>" + json[i].qAnswer + "</td>");
+          $("#new-test-div-content #new-test-tr" + i).append("<td class='operate-td'><i class='fa fa-th-list' title='查看详情' onclick='questionDetail(" + json[i].qNo + ")'></i>&nbsp;&nbsp;<i class='fa fa-plus' title='添加' onclick='doAddQuestion(" + json[i].qNo + ")'></i></td>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+
+  function initNewTestNowQ() {
+    $("#new-test-div-content #new-test-now-table").empty().append("<tr class=\"table-head\"><td>题目编号</td><td>题目类型</td><td>题目标题</td><td>题目难度</td><td>所属章节</td><td>操作</td><td>分值</td></tr>");
+    $("#new-test-div-content #new-test-now-table").append("<tr id='jisuan' style='background: #eee'><td style='text-align: right' colspan=6>分值合计</td><td id='marks-sum'>0</td></tr>");
+  }
+  function doAddQuestion(qNo) {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getQuestionByQNo",
+      data: {
+        qNo: qNo
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data[0];
+        $("#new-test-div-content #new-test-now-tr" + qNo).remove();
+        $("#new-test-div-content #new-test-now-table #jisuan").before("<tr id='new-test-now-tr" + qNo + "'></tr>");
+        $("#new-test-div-content #new-test-now-tr" + qNo).append("<td>" + json.qNo + "</td>");
+        $("#new-test-div-content #new-test-now-tr" + qNo).append("<td>" + json.qTitle + "</td>");
+        $("#new-test-div-content #new-test-now-tr" + qNo).append("<td>" + getQTypeName(json.qType) + "</td>");
+        $("#new-test-div-content #new-test-now-tr" + qNo).append("<td>" + getQDifficultyName(json.qDifficulty) + "</td>");
+        $("#new-test-div-content #new-test-now-tr" + qNo).append("<td>" + getChaName(json.chaNo) + "</td>");
+        $("#new-test-div-content #new-test-now-tr" + qNo).append("<td class='operate-td'><i class='fa fa-th-list' title='查看详情' onclick='questionDetail(" + json.qNo + ")'></i>&nbsp;&nbsp;<i class='fa fa-remove' title='移除' onclick='removeQuestion(" + json.qNo + ")'></i></td>");
+        $("#new-test-div-content #new-test-now-tr" + qNo).append("<td><input placeholder='点击填写分值' class='marks' id='marks-" + qNo + "' style='width: auto'/></td>");
+        $(".marks").keyup(function () {
+          var marks = $(".marks");
+          var sum = 0;
+          for (var i = 0; i < marks.length; i++) {
+            sum += parseInt($(marks[i]).val());
+          }
+          $("#marks-sum").text(sum);
+        });
+        $("#new-test-addQ").hide();
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function newTestDoQuestionFilter() {
+    var qType = $("#new-test-div-content select[name=q-type]").val();
+    var chaNo = $("#new-test-div-content select[name=chano3]").val();
+    var qDifficulty = $("#new-test-div-content select[name=q-difficulty]").val();
+    $("#new-test-div-content #new-test-table").empty();
+    initNewTestAllQ(qType, chaNo, qDifficulty);
+  }
+  function questionDetail(qNo) {
+    pop("<iframe src=\"../q_preview.html?qNo=" + qNo + "\"></iframe>");
+  }
+  function removeQuestion(qNo) {
+    if (confirm("确认移除？")) {
+      $("#new-test-div-content #new-test-now-tr" + qNo).remove();
+    }
+  }
+  function calculate() {
+  }
+</script>

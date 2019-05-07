@@ -1,0 +1,165 @@
+<div class = "choose">
+<div class = "form-ipt">
+	<div class = "til">选择班级</div>
+	<div class = "con">
+		<select name = "select-class" id = "select-class" onclick = "selectStudent()">
+			<option value = "-1">请选择</option>
+		</select>
+	</div>
+</div>
+<br>
+<div class = "form-ipt">
+	<div class = "til">选择生成对象</div>
+	<div class = "con">
+		<select name = "select-sno" id = "select-sno">
+			<option value = "-1">全体学生</option>
+		</select>
+	</div>
+	 <div style="color: grey;padding-top: 10px;font-size: 13px;">
+  注：全体学生显示的是系统的数据汇总报表
+      </div>
+</div>
+<br>
+<div class = "form-ipt" id = "chapter-div-content">
+	<div class = "til">选择章节</div>
+	<div class = "con">
+		<select name = "select-knowledge" class = "chapter1">
+		</select>
+	</div>
+</div>
+<br>
+<div class = "form-ipt">
+	 <div onclick="createNewPreviewChart()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    查看预习情况图表
+  </div>
+  <div onclick="createNewClassChart()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    查看课后学习情况图表
+  </div>
+</div> 
+<br>
+<div class="form-ipt">
+  <a id = "download">
+  <button class="til submit-btn" type="button" onclick="outputData()">数据导出</button>
+  </a>
+</div>
+</div>
+<script>
+	$(function(){
+		init();
+	});
+	function init(){
+		initClass();
+		initStudent();
+		initChapter(0,"chapter",1);
+	}
+	function selectStudent(){
+		initStudent();
+	}
+	
+	function initClass(){
+		$("#select-class").empty();
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getTeacherByTno",
+			data:{
+				tNo:localStorage.getItem("tno")
+			},
+			success:function(j){
+				var json = JSON.parse(j).data;
+				 for(var i = 0; i < json.length; ++i){
+					 $("#select-class").append("<option value = '" + json[i].claNo + "'>" + json[i].claNo + "</option>");
+				 }
+			},
+			error:function(){
+				alert("error");
+			}
+		})
+	}
+	function initStudent(){
+		$("#select-sno").empty();
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getStudentByclaNo",
+			data:{
+				claNo:$("select[name = 'select-class']").val()
+			},
+			success:function(j){
+				var json = JSON.parse(j).data;
+				$("#select-sno").empty();
+				$("#select-sno").append("<option value ='-1'>全体学生</option>")
+				for(var i = 0; i < json.length; ++i){
+					$("#select-sno").append("<option value = '" + json[i].sno +"'>" + json[i].sname + "</option>" );
+				}
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	
+	function createNewClassChart(){
+		var sno = $("select[name = 'select-sno']").val();
+		var chaNo = $("select[name = 'select-knowledge']").val();
+		var url = "..\/new_chart.html?sno=" + sno +"\&chaNo=" + chaNo +"\&state=1";
+		pop("<iframe src = " + encodeURI(url) + "></iframe>")
+	}
+	function createNewPreviewChart(){
+		var sno = $("select[name = 'select-sno']").val();
+		var chaNo = $("select[name = 'select-knowledge']").val();
+		var url = "..\/new_chart.html?sno=" + sno +"\&chaNo=" + chaNo +"\&state=0";
+		pop("<iframe src = " + encodeURI(url) + "></iframe>")
+	}
+	
+	function outputData(){
+		var sno = $("select[name = 'select-sno']").val();
+		var chaNo = $("select[name = 'select-knowledge']").val();
+		if(sno == "-1"){//导出全体学生的数据
+			exportAllStudent(chaNo);
+		} else {
+			exportPersonInfo(sno,chaNo);
+		}
+	}
+	
+	function exportAllStudent(chaNo){
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "outputAllData",
+			async:false,
+			data:{
+				chaNo:chaNo
+			},
+			beforeSend:function(){
+				$(".submit-btn").html("文件生成中...");
+			},
+			success:function(){
+				$(".submit-btn").html("数据导出");
+				$("#download").attr("href","../res/data.xls");
+				$("#download").attr("download","data.xls");
+				$("#download").click();
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	
+	function exportPersonInfo(sno,chaNo){
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "outputPersonData",
+			async:false,
+			data:{
+				sno:sno,
+				chaNo:chaNo
+			},
+			success:function(){
+				$("#download").attr("href","../res/" + sno + "_data.xls");
+				$("#download").attr("download",sno + "_data.xls");
+				$("#download").click();
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+</script>

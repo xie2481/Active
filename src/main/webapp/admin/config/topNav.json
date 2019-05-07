@@ -1,0 +1,40 @@
+﻿{
+  "config": [
+    {
+      "name": "生动网",
+      "href": "../",
+      "child": []
+    },
+    {
+      "name": "平台介绍",
+      "href": "#",
+      "child": []
+    },
+    {
+      "name": "关于生动",
+      "href": "#",
+      "child": []
+    },
+    {
+      "name": "联系我们",
+      "href": "#",
+      "child": []
+    },
+    {
+      "name": "其他模块",
+      "href": "#",
+      "child": [
+        {
+          "name": "个人信息",
+          "href": "info.html",
+          "child": []
+        },
+        {
+          "name": "密码修改",
+          "href": "pwd.html",
+          "child": []
+        }
+      ]
+    }
+  ]
+}

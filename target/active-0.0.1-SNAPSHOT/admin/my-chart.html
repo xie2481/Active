@@ -1,0 +1,105 @@
+<div class = "choose">
+<div class = "form-ipt">
+	<div class = "til">选择班级</div>
+	<div class = "con">
+		<select name = "select-class" id = "select-class" onchange = "selectStudent()">
+			<option value = "-1">请选择</option>
+		</select>
+	</div>
+</div>
+<br>
+<div class = "form-ipt">
+	<div class = "til">选择生成对象</div>
+	<div class = "con">
+		<select name = "select-sno" id = "select-sno">
+			<option value = "-1">全体学生</option>
+		</select>
+	</div>
+	 <div style="color: grey;padding-top: 10px;font-size: 13px;">
+  注：全体学生显示的是系统的数据汇总报表
+      </div>
+</div>
+<br>
+<div class = "form-ipt" id = "chapter-div-content">
+	<div class = "til">选择章节</div>
+	<div class = "con">
+		<select name = "select-knowledge" class = "chapter1">
+		</select>
+	</div>
+</div>
+<br>
+<div class = "form-ipt">
+	 <div onclick="createNewPreviewChart()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    查看预习情况图表
+  </div>
+  <div onclick="createNewClassChart()" class="con" style="background: #eee;cursor: pointer;font-size: 12px;">
+    查看课后学习情况图表
+  </div>
+</div> 
+</div>
+<script>
+	$(function(){
+		init();
+	});
+	function init(){
+		initClass();
+		initStudent();
+		initChapter(0,"chapter",1);
+	}
+	function selectStudent(){
+		initStudent();
+	}
+	
+	function initClass(){
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getTeacherByTno",
+			data:{
+				tNo:localStorage.getItem("tno")
+			},
+			success:function(j){
+				var json = JSON.parse(j).data;
+				 for(var i = 0; i < json.length; ++i){
+					 $("#select-class").append("<option value = '" + json[i].claNo + "'>" + json[i].claNo + "</option>");
+				 }
+			},
+			error:function(){
+				alert("error");
+			}
+		})
+	}
+	function initStudent(){
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getStudentByclaNo",
+			async:false,
+			data:{
+				claNo:$("select[name = 'select-class']").val()
+			},
+			success:function(j){
+				var json = JSON.parse(j).data;
+				$("#select-sno").empty();
+				$("#select-sno").append("<option value ='-1'>全体学生</option>")
+				for(var i = 0; i < json.length; ++i){
+					$("#select-sno").append("<option value = '" + json[i].sno +"'>" + json[i].sname + "</option>" );
+				}
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	
+	function createNewClassChart(){
+		var sno = $("select[name = 'select-sno']").val();
+		var chaNo = $("select[name = 'select-knowledge']").val();
+		var url = "..\/new_chart.html?sno=" + sno +"\&chaNo=" + chaNo +"\&state=1";
+		pop("<iframe src = " + encodeURI(url) + "></iframe>")
+	}
+	function createNewPreviewChart(){
+		var sno = $("select[name = 'select-sno']").val();
+		var chaNo = $("select[name = 'select-knowledge']").val();
+		var url = "..\/new_chart.html?sno=" + sno +"\&chaNo=" + chaNo +"\&state=0";
+		pop("<iframe src = " + encodeURI(url) + "></iframe>")
+	}
+</script>

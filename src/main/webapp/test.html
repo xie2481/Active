@@ -1,0 +1,194 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>生动-网上测试</title>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+</head>
+<body>
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right">
+
+    </div>
+  </div>
+</div>
+<!--导航-->
+<div class="navigation">
+  <div class="nav">
+    <a href="index.html">
+      <img style="margin-bottom:5px;" src="res/logo-title.png" width="160" height="40"/>
+    </a>
+    <ul></ul>
+    <div class="search">
+      <div class="search-input">
+        <input type="text" placeholder="搜索全站">
+      </div>
+      <div class="search-btn">
+        <i class="fa fa-search" style="color: white;padding: 0 5px;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!--路径-->
+<div class="route">
+  <a href="index.html">首页 / </a>
+  <a href="test.html" class="route-now">网上测试</a>
+</div>
+<!--待加载内容-->
+<span id="load-content">
+<!--内容-->
+<div class="content">
+  <div class="page-title">
+    ■ 最新测试
+    <a href="training_all.html" class="page-subtitle">
+      查看全部 &gt;
+    </a>
+  </div>
+  <div class="page-content" id="training"></div>
+</div>
+<div class="content" style="margin-top: 15px;">
+  <div class="page-title">
+    ■ 我的测试
+    <a href="training_all.html" class="page-subtitle">
+      查看全部 &gt;
+    </a>
+  </div>
+  <div class="page-content" id="homework">
+
+  </div>
+</div>
+<!--页尾-->
+<footer>
+  <div class="content">
+    <div class="foot-left">
+      <img height="55" src="res/logo2.png">
+    </div>
+    <div align="left" style="position:absolute; top:0px; left:125px;">
+      生动你的大学生活！<br>Alpha_0.0.1_2016-01-22
+    </div>
+    <a class="foot-link" href="introduce.html">平台介绍</a>|
+    <a class="foot-link" href="about.html">关于生动</a>|
+    <a class="foot-link" href="contact.html">联系我们</a>|
+    <a class="foot-link" href="mobile/index.html">生动网移动版</a>
+    <br>Copyright &copy; 2016 生动网页 All Rights Reserved.
+    <div class="foot-right">
+      皖ICP备16001596号<br>皖公网安备12345678987654321号
+    </div>
+  </div>
+</footer>
+</span>
+<span id="father-page" style="display: none">test.html</span>
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script type="text/javascript">
+  $(function () {
+    init();
+  });
+  function init() {
+    nav();
+    initExam();
+  }
+  function testFetch() {
+    fetch(defaultUrl + "getTrainingListByTime").then(function (response) {
+      if (response.status !== 200) {
+        console.log('Looks like there was a problem. Status Code: ' + response.status);
+        return;
+      }
+      response.json().then(function (data) {
+        var json = data.data;
+        for (var i = 0; i < json.length; i++) {
+          $("#training").append("<div class=\"training\"><div class=\"doc-content\"><div class=\"doc-title\">" + json[i].trainName + "</div><div class=\"tag\">上传时间：" + (json[i].trainTime.year + 1900) + "-" + (json[i].trainTime.month + 1 ) + "-" + json[i].trainTime.date + "</div><div class=\"tag\">包含题目：" + json[i].cou + " 道</div></div><a href=\"train_show.html?trainNo=" + json[i].trainNo + "\" class=\"doc-download-btn\">练习</a></div>");
+        }
+      });
+    }).catch(function (err) {
+      console.log('Fetch Error :-S', err);
+    });
+  }
+  function initExam() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getExamListByTime",
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        if (json.length == 0) {
+          $("#training").append("<div class='no-tip'>暂无</div>");
+          return;
+        }
+        for (var i = 0; i < json.length; i++) {
+          $("#training").append("<div class=\"training\"><div class=\"doc-content\"><div class=\"doc-title\">" + json[i].eName + "</div><div class=\"tag\">上传时间：" + (json[i].eTime.year + 1900) + "-" + (json[i].eTime.month + 1 ) + "-" + json[i].eTime.date + "</div><div class=\"tag\">包含题目：" + json[i].cou + " 道</div></div><a href=\"test_confirm.html?eNo=" + json[i].eNo + "\" class=\"doc-download-btn\">考试</a></div>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+    $.ajax({
+      async: false,
+      type: "post",
+      url: defaultUrl + "getExamresultBySno",
+      data: {
+        sNo: localStorage.getItem("sno")
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        if (json.length == 0) {
+          $("#homework").append("<div class='no-tip'>暂无</div>");
+          return;
+        }
+        for (var i = 0; i < json.length; i++) {
+          $.ajax({
+            async: false,
+            type: "post",
+            url: defaultUrl + "getExamListByENo",
+            data: {
+              eNo: json[i].eNo
+            },
+            success: function (j2) {
+              var json2 = JSON.parse(j2).data[0];
+              var s;
+              if (json[i].erMark == -1) {
+                s = "color-gray-font";
+                $("#homework").append("<a href='test_view.html?eNo=" + json2.eNo + "'><div class=\"li2\"><div class=\"li-content\"><div class=\"mark-right " + s + "\">成绩：暂无</div><div class=\"doc-title\">" + json2.eName + "</div><div class=\"tag\">总分：" + json2.eMark + "</div><div class=\"tag\">时长：" + (parseInt(json2.eDuration) / 60) + "分钟</div><div class=\"tag\">答题时间：" + (json[i].seTime.year + 1900) + "-" + (json[i].seTime.month + 1 ) + "-" + json[i].seTime.date + " " + (json[i].seTime.hours < 10 ? "0" + json[i].seTime.hours : json[i].seTime.hours) + ":" + (json[i].seTime.minutes < 10 ? "0" + json[i].seTime.minutes : json[i].seTime.minutes) + ":" + (json[i].seTime.seconds < 10 ? "0" + json[i].seTime.seconds : json[i].seTime.seconds) + "</div></div></div></a>");
+              } else {
+                if (json[i].erMark < 60) {
+                  s = "color-danger-font";
+                } else if (json[i].erMark < 80) {
+                  s = "color-warning-font";
+                } else if (json[i].erMark < 90) {
+                  s = "color-info-font";
+                } else {
+                  s = "color-success-font";
+                }
+                $("#homework").append("<a href='test_view.html?eNo=" + json2.eNo + "'><div class=\"li2\"><div class=\"li-content\"><div class=\"mark-right " + s + "\">成绩：" + json[i].erMark + "分</div><div class=\"doc-title\">" + json2.eName + "</div><div class=\"tag\">总分：" + json2.eMark + "</div><div class=\"tag\">时长：" + (parseInt(json2.eDuration) / 60) + "分钟</div><div class=\"tag\">答题时间：" + (json[i].seTime.year + 1900) + "-" + (json[i].seTime.month + 1 ) + "-" + json[i].seTime.date + " " + (json[i].seTime.hours < 10 ? "0" + json[i].seTime.hours : json[i].seTime.hours) + ":" + (json[i].seTime.minutes < 10 ? "0" + json[i].seTime.minutes : json[i].seTime.minutes) + ":" + (json[i].seTime.seconds < 10 ? "0" + json[i].seTime.seconds : json[i].seTime.seconds) + "</div></div></div></a>");
+              }
+            },
+            error: function () {
+              alert("error");
+            }
+          });
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+</script>
+</body>
+</html>

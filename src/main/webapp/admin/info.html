@@ -1,0 +1,47 @@
+<div id="info">
+  <div class="form-ipt">
+    <div class="til">学校</div>
+    <div class="con" id="tschool"></div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">学院</div>
+    <div class="con" id="tcollege"></div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">专业</div>
+    <div class="con" id="tmajor"></div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">姓名</div>
+    <div class="con" id="tname"></div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">教师号</div>
+    <div class="con" id="tno"></div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">性别</div>
+    <div class="con" id="tsex"></div>
+  </div>
+</div>
+
+<script type="text/javascript">
+  function initThis() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getTeacherOnlyByTno",
+      data: {
+        tNo: localStorage.getItem("tno")
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data[0];
+        for (var key in json) {
+          $("#info-div-content #" + key).text(json[key]);
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+</script>

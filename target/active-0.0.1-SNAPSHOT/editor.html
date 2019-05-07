@@ -1,0 +1,204 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>代码框</title>
+<!--下面两个是使用Code Mirror必须引入的-->
+<link rel="stylesheet" href="codemirror-5.31.0/lib/codemirror.css"/>
+<script src="codemirror-5.31.0/lib/codemirror.js"></script>
+<!--Java代码高亮必须引入-->
+<script src="codemirror-5.31.0/clike.js"></script>
+<!--groovy代码高亮-->
+<script src="codemirror-5.31.0/mode/groovy/groovy.js"></script>
+<!--引入css文件，用以支持主题-->
+<link rel="stylesheet" href="codemirror-5.31.0/theme/dracula.css"/>
+
+<!--引入css文件支持智能提示-->
+<link rel = "stylesheet" href = "codemirror-5.31.0/addon/hint/show-hint.css"/>
+<!--引入智能提示的js-->
+<script src="codemirror-5.31.0/addon/hint/show-hint.js"></script>
+<!--支持代码折叠-->
+<link rel="stylesheet" href="codemirror-5.31.0/addon/fold/foldgutter.css"/>
+<script src="codemirror-5.31.0/addon/fold/foldcode.js"></script>
+<script src="codemirror-5.31.0/addon/fold/foldgutter.js"></script>
+<script src="codemirror-5.31.0/addon/fold/brace-fold.js"></script>
+<script src="codemirror-5.31.0/addon/fold/comment-fold.js"></script>
+<!--括号匹配-->
+<script src="codemirror-5.31.0/addon/edit/matchbrackets.js"></script>
+<script src = "js/jquery.min.js"></script>
+<link rel = "stylesheet" type = "text/css" href = "style/jquery.dropdown.css">
+<script type="text/javascript" src = "js/jquery.dropdown.js"></script>
+<style>
+	.head{
+		height:40px;
+		width:100%;
+		margin-left:-5px;
+		margin-top:-10px;
+		background:#555;
+	}
+	.selectSearch{
+		 width: 200px;
+                height: 40px;
+                border-radius: 5px;
+                position: relative;
+	}
+	.select-language{
+				border: none;
+                outline: none;
+                width: 100%;
+                height: 40px;
+                line-height: 40px;
+                padding-left: 60px;
+                background:#555;
+                color:orange;
+                font-size:18px;
+	}
+	.content{
+		width:100%;
+		height:300px;
+		background:red;
+		margin-left:-5px;
+	}
+	.ojfoot{
+		width:100%;
+		height:61px;
+		border-right:1px solid #222;
+		border-bottom:1px solid #222;
+		border-left:1px solid #222;
+		margin-left:-6px;
+	}
+	.submit_btn{
+		border-bottom:none;
+		background:#eee;
+		height:20px;
+		width:70px;
+		float:right;
+		margin-top:42px;
+		padding-bottom:10px;
+	}
+	.clear_btn{
+		border-bottom:none;
+		border-right:none;
+		height:20px;
+		width:70px;
+		background:#eee;
+		float:right;
+		margin-top:42px;
+		padding-bottom:10px;
+	}
+</style>
+</head>
+<body>
+	<div class = "head">
+		<div class = "selectSearch">
+			<select class = "select-language" name = "language" placeholder = "请选择">
+				<option value = "java">java</option>
+			</select>
+		</div>
+	</div>
+	<div class = "content">
+		<textarea id = "codes" name = "codes"></textarea>
+	</div>
+	<div class = "ojfoot">
+		<button class = "clear_btn" id = "btn_clear">清空</button>
+		<button class = "submit_btn" id = "btn">提交</button>
+		<div class = "result_show"></div>
+	</div>
+	<!--textarea id="codes" name="codes"></textarea>
+	<button type = "submit" id = "btn">提交</button>
+	<button id = "btn_clear">清空</button>
+	<div class = "result_show"></div-->
+</body>
+<script src = "js/public.js"></script>
+<script>
+	var initInterface;//存储初始化时的接口函数
+    //根据DOM元素的id构造出一个编辑器
+    var editor = CodeMirror.fromTextArea(document.getElementById("codes"), {
+        mode: "text/groovy",    //实现groovy代码高亮
+        mode: "text/x-" + $("select[name = 'language']").val(), //实现选择对应的代码高亮
+        lineNumbers: true,	//显示行号
+        theme: "dracula",	//设置主题
+        lineWrapping: true,	//代码折叠
+        foldGutter: true,
+        gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"],
+        matchBrackets: true,	//括号匹配
+        autoRefresh:true,
+        //readOnly: true,        //只读
+    });
+    //editor.setSize('800px', '950px');     //设置代码框的长宽
+
+    editor.setValue("");    //先代码框的值清空
+   //editor.setValue(obj.scriptCode);    //给代码框赋值
+   window.setTimeout(function(){
+	   editor.refresh();
+   })
+   $(function(){
+	   initOJInterface();
+   });
+   function initOJInterface(){
+	   $.ajax({
+		   type:"post",
+		   url:defaultUrl + "getOJInterface",
+		   data:{
+			   title:window.parent.title,
+			   codeType:$("select[name = 'language']").val()
+		   },
+		   success:function(j){
+			   editor.setValue(j);
+			   initInterface = j;
+		   },
+		   error:function(){
+			   alert("error");
+		   }
+	   });
+   }
+   $("#btn").click(function(){
+	  //清空之前的结果
+	  $(".result_show").empty();
+	  $.ajax({
+		 type:"post",
+		 url:defaultUrl + "submitOJAnswer",
+		 data:{
+			title:window.parent.title,
+			answer:editor.getValue(),
+			codeType:$("select[name = 'language']").val()
+		 },
+		 beforeSend:function(){
+			 $(".result_show").append("Compile.....");
+		 },
+		 success:function(j){
+			 $(".result_show").empty();
+			 $(".result_show").append(j);
+			 if(j == "accepted\n"){//运行通过，写入数据库，记录通过数据
+				 acceptProblem();
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+   });
+   
+   function acceptProblem(){
+	   $.ajax({
+		   type:"post",
+		   url:defaultUrl + "addRecordAccepted",
+		   data:{
+			   SNo:localStorage.getItem("sno"),
+			   trainNo:window.parent.trainNo
+		   },
+		   success:function(){
+			   //alert("success");
+		   },
+		   error:function(){
+			  alert("error");
+		   }
+	   });
+   }
+   $("#btn_clear").click(function(){
+	   editor.setValue(initInterface);
+	   $(".result_show").empty();
+   })
+    // editor.setOption("readOnly", true);
+</script>
+</html>

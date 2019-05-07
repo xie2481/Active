@@ -1,0 +1,75 @@
+<form id="uploadDocForm" enctype="multipart/form-data">
+  <div class="form-ipt">
+    <div class="til">文件名称</div>
+    <div class="con">
+      <input name="doc-name" placeholder="点击输入文件名称"/>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">文件类型</div>
+    <div class="con">
+      <select name="doc-type">
+        <option value="word">Word文档</option>
+        <option value="powerpoint">PPT文档</option>
+        <option value="excel">Excel文档</option>
+        <option value="pdf">PDF文档</option>
+        <option value="audio">音频</option>
+        <option value="video">视频</option>
+        <option value="code">代码</option>
+        <option value="zip">压缩包</option>
+        <option value="text">文本文件</option>
+      </select>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">所属章节</div>
+    <div class="con">
+      <select name="chano1" class="chapter1" onclick="getNext(this.value,'new-doc',2);"></select>
+      <select name="chano2" class="chapter2" onclick="getNext(this.value,'new-doc',3);"></select>
+      <select name="chano3" class="chapter3"></select>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">上传文件</div>
+    <div class="con">
+      <input name="document" type="file"/>
+    </div>
+  </div>
+  <div class="form-ipt">
+    <div class="til">教师编号</div>
+    <div class="con">
+      <input name="tno" readonly/>
+    </div>
+  </div>
+
+  <div class="form-ipt">
+    <button class="til submit-btn" type="button" onclick="uploadVideo()">立即上传</button>
+    <button type="reset" id="reset-doc">重置</button>
+  </div>
+</form>
+<script type="text/javascript">
+  var pageName = "new-doc";
+  function initThis() {
+    initChapter(0, pageName, 1);
+    $("#uploadDocForm input[name=tno]").val(localStorage.getItem("tno"));
+  }
+  function uploadVideo() {
+    var formData = new FormData($("#uploadDocForm")[0]);
+    $.ajax({
+      url: defaultUrl + "UploadDoc",
+      type: 'POST',
+      data: formData,
+      cache: false,
+      contentType: false,
+      processData: false,
+      success: function () {
+        alert("上传成功！");
+        $("#reset-doc").click();
+        $("#uploadDocForm input[name=tno]").val(localStorage.getItem("tno"));
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+</script>

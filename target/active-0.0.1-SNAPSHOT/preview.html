@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>生动-课前预习</title>
+   <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+</head>
+<style>
+	.require-no{
+		padding-left:60px;
+		color:#d9534f;
+	}
+	.require{
+		padding-left:60px;
+		color:#5cb85c;
+	}
+	.require-title{
+		padding-left:20px;
+		margin-bottom:5px;
+		font:bold;
+		color:#5cb85c;
+		font-size:30px;
+	}
+	.require-no-title{
+	padding-left:20px;
+		margin-bottom:5px;
+		font:bold;
+		color:#d9534f;
+		font-size:30px;
+	}
+}
+</style>
+<body>
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right"></div>
+  </div>
+</div>
+<!--导航-->
+<div class="navigation">
+  <div class="nav">
+    <a href="index.html">
+      <img style="margin-bottom:5px;" src="res/logo-title.png" width="160" height="40"/>
+    </a>
+    <ul></ul>
+    <div class="search">
+      <div class="search-input">
+        <input type="text" placeholder="搜索全站">
+      </div>
+      <div class="search-btn">
+        <i class="fa fa-search" style="color: white;padding: 0 5px;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!--路径-->
+<div class="route">
+  <a href="index.html">首页 / </a>
+  <a href="preview.html" class="route-now">课前预习</a>
+</div>
+<!--待加载内容-->
+<span id="load-content">
+<!--内容-->
+<div class = "content">
+	<!-- 要求完成的任务 -->
+	<div class = "page-title">
+	 ■ 预习要求	 
+	</div>
+	<div class = "page-content" id="new-preview"></div>
+	<!-- 对知识点掌握情况的问卷 -->
+	<div class = "page-title">
+	■ 知识问卷
+	<a href = "preview_questionare.html" class = "page-subtitle">
+	查看问卷&nbsp;&gt;</a>
+	</div>
+	</div>
+</div>
+<!--页尾-->
+<footer>
+  <div class="content">
+    <div class="foot-left">
+      <img height="55" src="res/logo2.png">
+    </div>
+    <div align="left" style="position:absolute; top:0px; left:125px;">
+      生动你的大学生活！<br>Alpha_0.0.1_2016-01-22
+    </div>
+    <a class="foot-link" href="introduce.html">平台介绍</a>|
+    <a class="foot-link" href="about.html">关于生动</a>|
+    <a class="foot-link" href="contact.html">联系我们</a>|
+    <a class="foot-link" href="mobile/index.html">生动网移动版</a>
+    <br>Copyright &copy; 2016 生动网页 All Rights Reserved.
+    <div class="foot-right">
+      皖ICP备16001596号<br>皖公网安备12345678987654321号
+    </div>
+  </div>
+</footer>
+</span>
+<span id="father-page" style="display: none">preview.html</span>
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script type="text/javascript">
+  $(function () {
+    init();
+  });
+  function init() {
+    nav();
+    initPreviewRequire();
+  }
+  function initPreviewRequire(){/*初始化预习要求*/
+	  $.ajax({
+	      type: "post",
+	      url: defaultUrl + "getPreviewRequireBySNo",
+	      data:{
+	    	  SNo:localStorage.getItem("sno")
+	      },
+	      success: function (j) {
+	        var json = JSON.parse(j).data;
+	        if (json.length == 0) {
+	          $("#new-preview").append("<div class='no-tip'>暂无</div>");
+	          return;
+	        }
+	        $("#new-preview").append("<div class = 'require-title'>" + "推荐预习任务" + "</div>");
+	        for(var i = 0; i < json.length; ++i){
+	        	if(json[i].isonline == 0){
+	        		$("#new-preview").append("<div class = 'require'>"  + json[i].trequire + "</div>");
+	        	}
+	        }
+	        $('#new-preview').append("<div class = 'require-title'>" + "已完成 :" + "</div>");
+	        //更新当前的完成状态
+	        json = updateState(json);
+	        
+	        for (var i = 0; i < json.length; i++) {
+		          if(json[i].sstate == "已完成")
+		          $('#new-preview').append("<div class = 'require'>" 
+		        		   + json[i].trequire + "</div>");
+		    }
+	        $('#new-preview').append("<div class = 'require-no-title'>" 
+	        		   + "未完成：" + "</div>");
+	        for (var i = 0; i < json.length; i++) {
+	          	if(json[i].sstate == "未完成" && json[i].isonline == 1)
+	          		$('#new-preview').append("<div class = 'require-no'>" 
+	        		   	+ json[i].trequire + "</div>");
+	        }
+	      },
+	      error: function () {
+	        alert("error");
+	      }
+	    });
+  }
+  
+  function updateState(json){
+	  for(var i = 0; i < json.length;++i){
+		  if(json[i].sstate == "已完成")
+			  continue;
+		  switch(json[i].require_type){
+		  case 1://当前要求完成oj的题目
+		  //此处的ajax必须要关闭异步刷新，否则json的状态无效
+		  	  $.ajax({
+		  		  type:"post",
+		  		  url:defaultUrl + "selectOJState",
+		  		  data:{
+		  			  SNo:json[i].sno,
+		  			  id:json[i].require_id
+		  		  },
+		  		  async:false,
+		  		  success:function(j){
+		  			  if(j == "true"){
+		  				  updateStudentPreviewState(json[i].id);
+		  				  json[i].sstate = "已完成"
+		  			  }
+		  		  },
+		  		  error:function(){
+		  			  alert("error");
+		  		  }
+		  	  });
+		  	  break;
+		  case 2:
+			  $.ajax({
+				 type: "post",
+				 url: defaultUrl + "selectVideoState",
+				 data:{
+					 sno:json[i].sno,
+					 id:json[i].require_id
+				 },
+				 async:false,
+				 success:function(j){
+					 if(j == "true"){
+						 updateStudentPreviewState(json[i].id);
+						 json[i].sstate = "已完成";
+					 }
+				 },
+				 error:function(){
+					 alert("error");
+				 }
+			  });
+			  break;
+		  }
+	  }
+	  return json;
+  }
+  
+  function updateStudentPreviewState(id){
+	  $.ajax({
+		 type:"post",
+		 url:defaultUrl + "updateStudentPreviewState",
+		 data:{
+			 id:id
+		 },
+		 success:function(){
+			 alert("success");
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+  }
+</script>
+</body>
+</html>

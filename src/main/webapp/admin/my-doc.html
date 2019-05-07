@@ -1,0 +1,49 @@
+<table class="table" id="d-table"></table>
+
+<script type="text/javascript">
+  function initThis() {
+    initMyDoc();
+  }
+  function initMyDoc() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getDocsByTno",
+      data: {
+        tNo: localStorage.getItem("tno")
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        $("#my-doc-div-content #d-table").append("<tr class=\"table-head\"><td>文件编号</td><td>文件名</td><td>文件类型</td><td>文件地址</td><td>所属章节</td><td>上传时间</td><td>操作</td></tr>");
+        for (var i = 0; i < json.length; i++) {
+          $("#my-doc-div-content #d-table").append("<tr id='d-tr" + i + "'></tr>");
+          $("#my-doc-div-content #d-tr" + i).append("<td>" + json[i].docNo + "</td>");
+          $("#my-doc-div-content #d-tr" + i).append("<td>" + json[i].docName + "</td>");
+          $("#my-doc-div-content #d-tr" + i).append("<td>" + json[i].docType + "</td>");
+          $("#my-doc-div-content #d-tr" + i).append("<td>" + json[i].docPath + "</td>");
+          $("#my-doc-div-content #d-tr" + i).append("<td>" + getChaName(json[i].chano) + "</td>");
+          $("#my-doc-div-content #d-tr" + i).append("<td>" + (json[i].docTime.year + 1900) + "-" + (json[i].docTime.month + 1 ) + "-" + json[i].docTime.date + "</td>");
+          $("#my-doc-div-content #d-tr" + i).append("<td class='operate-td'><i class='fa fa-remove' title='删除' onclick='deleteDoc(" + json[i].docNo + ")'></i></td>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function deleteDoc(docNo) {
+    $.ajax({
+    	type:"post",
+    	url:defaultUrl + "deleteDcoBydocNo",
+    	data:{
+    		docNo:docNo
+    	},
+    	success:function(){
+    		$("#my-doc-div-content #d-table").empty();
+    	    initMyDoc();	
+    	},
+    	error:function(){
+    		alert("error");
+    	}
+    });
+  }
+</script>

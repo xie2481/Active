@@ -1,0 +1,255 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+<title>预习调查情况反馈</title>
+ <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+  <link rel="stylesheet" type="text/css" href="style/font-awesome.min.css">
+</head>
+<style>
+	#questionare{
+		padding-left: 20px;
+	}
+	.que{
+		padding-left:15px;
+	}
+    .onquestion:before { content: ""; display: table; }
+
+    .onquestion:after { content: ""; display: table; clear: both; }
+
+     .onquestion > div { position: relative; float: left; margin-right: 50px; width: 80px; height: 40px; line-height: 40px; }
+
+     .onquestion > div:last-child { margin-right: 0; }
+
+     .onquestion label { display: block; width: 70px; height: 40px; line-height: 40px; cursor: pointer; }
+
+     .onquestion input { z-index: 3; display: block; opacity: 0; position: absolute; top: 0; bottom: 0; left: 70px; margin: auto; width: 30px; height: 30px; cursor: pointer; }
+
+     .onquestion .user-defined { z-index: 2; position: absolute; top: 0; bottom: 0; left: 75px; margin: auto; width: 30px; height: 30px; border: 1px solid #000; border-radius: 50%; cursor: pointer; }
+
+     .onquestion .user-defined span.circle  { display: block; width: 24px; height: 24px; margin-top: 2px; margin-left: 5px; background-color: transparent; border-radius: 50%; }
+
+     .onquestion .user-defined span.active  { background-color: #000; }
+     .button {
+		background-color: #5bc0de;
+		border: none;
+		color: #222;
+		padding: 5px 16px;
+		text-align: center;
+		text-decoration: none;
+		display: inline-block;
+		font-size: 10px;
+		margin: 4px 2px;
+		cursor: pointer;
+		}   
+</style>
+<body>
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right"></div>
+  </div>
+</div>
+<!--导航-->
+<div class="navigation">
+  <div class="nav">
+    <a href="index.html">
+      <img style="margin-bottom:5px;" src="res/logo-title.png" width="160" height="40"/>
+    </a>
+    <ul></ul>
+    <div class="search">
+      <div class="search-input">
+        <input type="text" placeholder="搜索全站">
+      </div>
+      <div class="search-btn">
+        <i class="fa fa-search" style="color: white;padding: 0 5px;"></i>
+      </div>
+    </div>
+  </div>
+</div>
+<!--路径-->
+<div class="route">
+  <a href="index.html">首页 / </a>
+  <a href="preview_questionare.html" class="route-now">预习情况反馈</a>
+</div>
+<!-- 内容 -->
+<div class = "content">
+	<div class = "page-title">问卷调查</div>
+	<div class = "page-content" id = "questionare">
+	</div>
+</div>
+<!--页尾-->
+<footer>
+  <div class="content">
+    <div class="foot-left">
+      <img height="55" src="res/logo2.png">
+    </div>
+    <div align="left" style="position:absolute; top:0px; left:125px;">
+      生动你的大学生活！<br>Alpha_0.0.1_2016-01-22
+    </div>
+    <a class="foot-link" href="introduce.html">平台介绍</a>|
+    <a class="foot-link" href="about.html">关于生动</a>|
+    <a class="foot-link" href="contact.html">联系我们</a>|
+    <a class="foot-link" href="mobile/index.html">生动网移动版</a>
+    <br>Copyright &copy; 2016 生动网页 All Rights Reserved.
+    <div class="foot-right">
+      皖ICP备16001596号<br>皖公网安备12345678987654321号
+    </div>
+  </div>
+</footer>
+</span>
+<span id="father-page" style="display: none">preview_questionare.html</span>
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script type="text/javascript">
+  var previewjson;/*定义全局的json，方便submit函数的调用*/
+  var state = false;
+  $(function () {
+	 checkState();//检查当前用户是否做过该问卷
+	 init();
+  });
+  
+  function checkState(){
+	  $.ajax({
+		 type: "post",
+		 url: defaultUrl + "checkState",
+		 async:false,
+		 data:{
+			 sNo: localStorage.getItem("sno"),
+			 claNo:localStorage.getItem("claNo")
+		 },
+		 success:function(j){
+			 if(j == "true"){//当前用户已做完试卷
+				 $("#questionare").append("<div class = 'no-tip'>暂无</div>");
+			 	 state = true;
+			 }
+		 },
+		 error:function(){
+			 alert("error");
+		 }
+	  });
+  }
+  $("input").click(function() {
+	    $(this).siblings("div").children("span").addClass("active");
+	    $(this).parents("div").siblings("div").find("span").removeClass("active");
+	});
+  function sin(obj){
+	  $(obj).siblings("div").children("span").addClass("active");
+	  $(obj).parents("div").siblings("div").find("span").removeClass("active");
+  }
+  function submit(){
+	  var datamap = new Map();
+      for(var i = 0; i < previewjson.length; ++i){
+		  var val = $("input[name = 'question" + i + "\'" + "]:checked").val();
+		  if(typeof(val) == "undefined"){
+			  alert("您有题目尚未完成，请检查后提交");
+			  return;
+		  }
+		  datamap.set(previewjson[i].rid,val);
+	 }
+      $.ajax({
+    	 type:'post',
+    	 url:defaultUrl + "updatePreviewScore",
+    	 data:{
+    		 sNo:localStorage.getItem("sno"),
+    		 claNo:localStorage.getItem("claNo"),
+    		 jsondata:mapToJson(datamap)
+    	 },
+    	 success:function(j){
+    		 alert("提交成功");
+    	 },
+    	 error:function(){
+    		 alert("error");
+    	 }
+      });
+      
+  }
+  
+  function strMapToObj(strMap){
+	  let obj= Object.create(null);
+	    for (let[k,v] of strMap) {
+	      obj[k] = v;
+	    }
+	    return obj;
+  }
+  
+  function mapToJson(map){
+	  return JSON.stringify(strMapToObj(map))
+  }
+  function init() {
+		 nav();
+		 if(state == false)
+	    	initQuestionare();
+  }
+  function initQuestionare(){
+	  $.ajax({
+		  type: "post",
+		  url:defaultUrl + "getPreviewQuestionare",
+		  data:{
+			  claNo:localStorage.getItem("claNo")
+		  },
+		  success:function(j){
+			  previewjson = JSON.parse(j).data;
+			  if(previewjson.length == 0){
+				  $("#questionare").append("<div class = 'no-tip'>暂无</div>");
+			  } else {
+				 for(var i = 0; i < previewjson.length; ++i){
+					$("#questionare").append(
+							"<div class = 'que'>" + (i + 1) + "" + previewjson[i].knowledge + "</div>" +
+							"<form action=''>" +
+						    "<div class='onquestion'>" +
+						        "<div class='veryHigh'>" +
+						            "<label for='veryHigh'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;熟练</label>" +
+						            "<input type='radio' name='question" + i + "\'" + "id='veryHigh' onclick = 'sin(this)' value = 4>" +
+						            "<div class='user-defined'>" +
+						                "<span class='circle'></span>" +
+						            "</div>" + 
+						        "</div>" + 
+						        "<div class='High'>"  +
+						            "<label for='High'>&nbsp;基本掌握</label>" +
+						            "<input type='radio' name='question" + i + "\'" + "id='High' onclick = 'sin(this)' value = 3>" +
+						            "<div class='user-defined'>" +
+						                "<span class='circle'></span>" +
+						            "</div>" +
+						        "</div>" +
+						        "<div class='Low'>" +
+						            "<label for='Low'>不太熟练</label>" +
+						            "<input type='radio' name='question" + i + "\'" +"id='Low' onclick = 'sin(this)' value = 2>" +
+						            "<div class='user-defined'>" +
+						                "<span class='circle'></span>" +
+						            "</div>" +
+						        "</div>" +
+						        "<div class='veryLow'>" +
+						            "<label for='veryLow'>完全不理解</label>" +
+						            "<input type='radio' name='question" + i + "\'" + "id='veryLow' onclick = 'sin(this)' value = 1>" + 
+						            "<div class='user-defined'>" +
+						                "<span class='circle'></span>" +
+						            "</div>" +
+						        "</div>" +
+						    "</div>" +
+						"</form>");
+				 } 
+				 $("#questionare").append(
+						 "<button type = 'button' id = 'button' class = 'button' onclick = 'submit()'>提交</button>");
+			  }
+		  },
+		  error:function(){
+			  alert("error");
+		  }
+	  });
+  }
+</script>
+</body>
+</html>+

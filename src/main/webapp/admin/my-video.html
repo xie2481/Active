@@ -1,0 +1,68 @@
+﻿<!--div class="toolbar">
+  章节：
+  <select name="chano1" class="chapter1" onclick="getNext(this.value,2);">
+  </select>
+  <select name="chano2" class="chapter2" onclick="getNext(this.value,3);">
+    <option value="-1">不限</option>
+  </select>
+  <select name="chano3" class="chapter3">
+    <option value="-1">不限</option>
+  </select>
+  <button class="toolbar-filter" onclick="doVideoFilter()">筛选</button>
+</div-->
+
+<table class="table" id="v-table"></table>
+
+<script type="text/javascript">
+  function initThis() {
+    initMyVideo();
+  }
+  function initMyVideo() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getVideosByTno",
+      data: {
+        tNo: localStorage.getItem("tno")
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        $("#my-video-div-content #v-table").append("<tr class=\"table-head\"><td>视频编号</td><td>视频名称</td><td>封面图象</td><td>视频地址</td><td>所属章节</td><td>播放次数</td><td>上传时间</td><td>操作</td></tr>");
+        for (var i = 0; i < json.length; i++) {
+          $("#my-video-div-content #v-table").append("<tr id='v-tr" + i + "'></tr>");
+          $("#my-video-div-content #v-tr" + i).append("<td>" + json[i].vno + "</td>");
+          $("#my-video-div-content #v-tr" + i).append("<td>" + json[i].vname + "</td>");
+          $("#my-video-div-content #v-tr" + i).append("<td>" + json[i].vimg + "</td>");
+          $("#my-video-div-content #v-tr" + i).append("<td>" + json[i].vaddress + "</td>");
+          $("#my-video-div-content #v-tr" + i).append("<td>" + getChaName(json[i].chano) + "</td>");
+          $("#my-video-div-content #v-tr" + i).append("<td>" + json[i].vcount + "</td>");
+          $("#my-video-div-content #v-tr" + i).append("<td>" + (json[i].vtime.year + 1900) + "-" + (json[i].vtime.month + 1 ) + "-" + json[i].vtime.date + "</td>");
+          $("#my-video-div-content #v-tr" + i).append("<td class='operate-td'><i class='fa fa-remove' title='删除' onclick='deleteVideo(" + json[i].vno + ")'></i></td>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function deleteVideo(vno) {
+    if (confirm("确认要删除此视频？")) {
+      $.ajax({
+        type: "post",
+        url: defaultUrl + "delVideo",
+        data: {
+          vNo: vno
+        },
+        success: function () {
+          $("#my-video-div-content #v-table").empty();
+          initMyVideo();
+          alert("删除成功！")
+        },
+        error: function () {
+          alert("error");
+        }
+      });
+    }
+  }
+  function doVideoFilter() {
+  }
+</script>

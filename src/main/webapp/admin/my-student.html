@@ -1,0 +1,168 @@
+<div class = "form-ipt">
+	<div class = "til">选择班级</div>
+	<div class = "con">
+		<select name = "select-class" id = "select-class" onclick = "showInfo()"></select>
+	</div>
+</div>
+<br>
+<br>
+<div id = "student-content"></div>
+<script>
+	var json = null;//存储所有学生的基本信息
+	var scores = [];//存储所有学生的平时成绩
+	var personFlag = false;//是否是搜索个人的标志
+	function initThis(){
+		initClass();
+	}
+	
+	function initClass(){
+		$("#select-class").empty();
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getTeacherByTno",
+			async:false,
+			data:{
+				tNo:localStorage.getItem("tno")
+			},
+			success:function(j){
+				var json = JSON.parse(j).data;
+				 for(var i = 0; i < json.length; ++i){
+					 $("#select-class").append("<option value = '" + json[i].claNo + "'>" + json[i].claNo + "</option>");
+				 }
+			},
+			error:function(){
+				alert("error");
+			}
+		})
+	}
+	
+	function showInfo(){
+		$("#student-content").empty();
+		initToolbar();
+		initTable();
+		getAllStudentInfo();
+	}
+	
+	function initToolbar(){
+		$("#student-content").append("<div class = 'toolbar' id = 'search-student'></div>");
+		$("#student-content").append("<br><div class = 'form-ipt'><a id = 'download'>" +
+										"<button class = 'til submit-btn' type = 'button'" +
+										"onclick = 'outputData()'>导出数据</button></a></div><br><br><br>")
+		$("#search-student").append("学号:&nbsp;<input type = 'text' name = 'searchSno'>&nbsp;");
+		$("#search-student").append("<button class='toolbar-filter' onclick='doStudentFilter()'>筛选</button>");
+	}
+	
+	function initTable(){
+		$("#student-content").append("<table class = 'table' id = 'student-table'></table>");
+		$("#student-table").append("<tr class = 'table-head'><td>学号</td><td>姓名</td><td>专业</td><td>班级</td><td>平时成绩</td></tr>");
+	}
+	
+	function getAllStudentInfo(){
+		var claNo = $("select[name ='select-class']").val();
+		if(personFlag == true){
+			for(var i = 0; i < json.length; ++i){
+				$("#student-table").append("<tr id = 'new-row-" + i + "'></tr>");
+				$("#new-row-" +i).append("<td>" + json[i].sno + "</td>");
+				$("#new-row-" + i).append("<td>" + json[i].sname + "</td>");
+				$("#new-row-" + i).append("<td>" + json[i].smajor + "</td>");
+				$("#new-row-" + i).append("<td>" + claNo + "</td>");
+				$("#new-row-" + i).append("<td>" + scores[i] + "</td>");
+			}
+			personFlag = false;
+			return;
+		}
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getStudentByclaNo",
+			data:{
+				claNo:claNo
+			},
+			success:function(j){
+				json = JSON.parse(j).data;
+				scores = [];
+				for(var i = 0; i < json.length; ++i){
+					scores.push(getScore(json[i].sno));
+					$("#student-table").append("<tr id = 'new-row-" + i + "'></tr>");
+					$("#new-row-" +i).append("<td>" + json[i].sno + "</td>");
+					$("#new-row-" + i).append("<td>" + json[i].sname + "</td>");
+					$("#new-row-" + i).append("<td>" + json[i].smajor + "</td>");
+					$("#new-row-" + i).append("<td>" + claNo + "</td>");
+					$("#new-row-" + i).append("<td>" + scores[i] + "</td>");
+				}
+				personFlag = false;
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+	function getScore(sno){
+		var score;
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "getUsualScoreBySno",
+			async:false,
+			data:{
+				sno : sno
+			},
+			success:function(j){
+				score = j;
+			},
+			error:function(){
+				alert("error");
+				score = 0;
+			}
+		});
+		return score;
+	}
+	
+	function doStudentFilter(){
+		var sno = $("input[name = 'searchSno']").val();
+		var claNo = $("select[name ='select-class']").val();
+		if(sno == ""){
+			personFlag = true;
+			showInfo();
+			return;
+		}
+		$("#student-content").empty();
+		initClass();
+		initToolbar();
+		initTable();
+		$("input[name = 'searchSno']").val(sno);
+		for(var i = 0; i < json.length; ++i){
+			if(sno == json[i].sno){
+				$("#student-table").append("<tr id = 'new-row-" + i + "'></tr>");
+				$("#new-row-" +i).append("<td>" + json[i].sno + "</td>");
+				$("#new-row-" + i).append("<td>" + json[i].sname + "</td>");
+				$("#new-row-" + i).append("<td>" + json[i].smajor + "</td>");
+				$("#new-row-" + i).append("<td>" + claNo + "</td>");
+				$("#new-row-" + i).append("<td>" + scores[i] + "</td>");
+			}
+		}
+	}
+	
+	function outputData(){
+		var claNo = $("select[name ='select-class']").val();
+		$.ajax({
+			type:"post",
+			url:defaultUrl + "outputStudentData",
+			async:false,
+			data:{
+				students:JSON.stringify(json),
+				scores:JSON.stringify(scores)
+			},
+			beforeSend:function(){
+				$(".submit-btn").html("文件生成中...");
+			},
+			success:function(){
+				$(".submit-btn").html("导出数据");
+				$("#download").attr("href","../res/" + claNo + ".xls");
+				$("#download").attr("download",claNo + ".xls");
+				$("#download").click();
+			},
+			error:function(){
+				alert("error");
+			}
+		});
+	}
+</script>

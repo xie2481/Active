@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>登陆生动</title>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+</head>
+<body style="background: #fdfdfd ">
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right">
+    </div>
+  </div>
+</div>
+<div style=" width:400px; position:relative; margin:0px auto;">
+  <div style=" position:absolute; top:220px; width:400px;background: white;border: 1px solid #ddd">
+    <div style="line-height: 3;text-align: center;border-bottom: 1px dashed #ddd;font-weight: bold">
+      提示
+    </div>
+    <div style="padding: 8px;text-align: center;line-height: 5" id="tip-content"></div>
+  </div>
+</div>
+<div
+    style="background: white;text-align: center; position:fixed; bottom:0px; width:100%; line-height:45px; color: rgba(220,220,220,1.00); border-top:1px solid #F4F4F4;">
+  Copyright &copy; 2016 生动网页 All Rights Reserved.
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script type="text/javascript">
+  $(function () {
+    nav();
+    var i = 3;
+    if (GetQueryString("trainNo") != null && GetQueryString("eNo") == null) {
+      $("#tip-content").html("你已经做过该练习，<span id='time'>3</span>秒后跳转至答卷页！");
+    } else if (GetQueryString("trainNo") == null && GetQueryString("eNo") != null) {
+      $("#tip-content").html("你已经做过该试卷，<span id='time'>3</span>秒后跳转至答卷页！");
+    } else {
+      $("#tip-content").html("出错了！<span id='time'>3</span>秒后跳转至首页！");
+    }
+    setInterval(function () {
+      if (i-- == 1) {
+        if (GetQueryString("trainNo") != null && GetQueryString("eNo") == null) {
+          location.href = "train_view.html?trainNo=" + GetQueryString("trainNo");
+        } else if (GetQueryString("trainNo") == null && GetQueryString("eNo") != null) {
+          location.href = "test_view.html?eNo=" + GetQueryString("eNo");
+        } else {
+          location.href = "index.html";
+        }
+        return;
+      }
+      $("#time").text(i);
+    }, 1000);
+  });
+</script>
+</body>
+</html>

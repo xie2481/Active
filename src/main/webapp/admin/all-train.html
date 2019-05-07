@@ -1,0 +1,83 @@
+<div class="toolbar">
+  练习类型：
+  <select name="train-type">
+    <option value="-1">不限</option>
+    <option value="1">普通练习</option>
+    <option value="2">家庭作业</option>
+  </select>
+  &nbsp;&nbsp;章节：
+  <select name="chano1" class="chapter1" onclick="getNext(this.value,2);">
+  </select>
+  <select name="chano2" class="chapter2" onclick="getNext(this.value,3);">
+    <option value="-1">不限</option>
+  </select>
+  <select name="chano3" class="chapter3">
+    <option value="-1">不限</option>
+  </select>
+  &nbsp;&nbsp;
+  <button class="toolbar-filter" onclick="doTrainingFilter()">筛选</button>
+</div>
+<table class="table" id="all-train-table"></table>
+
+<script type="text/javascript">
+  var pageName = "all-train";
+  function initThis() {
+    initAllTrain(-1, -1);
+    initChapter(0, pageName, 1);
+    $("#all-train-div-content .chapter1").prepend("<option value=\"-1\">不限</option>");
+  }
+  function initAllTrain(trainType, chaNo) {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getTrainings",
+      data: {
+        trainType: trainType,
+        chaNo: chaNo
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        $("#all-train-div-content #all-train-table").append("<tr class=\"table-head\"><td>练习编号</td><td>练习名称</td><td>练习类型</td><td>所属章节</td><td>上传时间</td><td>操作</td></tr>");
+        for (var i = 0; i < json.length; i++) {
+          $("#all-train-div-content #all-train-table").append("<tr id='all-train-tr" + i + "'></tr>");
+          $("#all-train-div-content #all-train-tr" + i).append("<td>" + json[i].trainNo + "</td>");
+          $("#all-train-div-content #all-train-tr" + i).append("<td>" + json[i].trainName + "</td>");
+          $("#all-train-div-content #all-train-tr" + i).append("<td>" + getTrainTypeName(json[i].trainType) + "</td>");
+          $("#all-train-div-content #all-train-tr" + i).append("<td>" + getChaName(json[i].chaNo) + "</td>");
+          $("#all-train-div-content #all-train-tr" + i).append("<td>" + (json[i].trainTime.year + 1900) + "-" + (json[i].trainTime.month + 1 ) + "-" + json[i].trainTime.date + "</td>");
+          $("#all-train-div-content #all-train-tr" + i).append("<td class='operate-td'><i class='fa fa-th-list' title='查看详情' onclick='trainingDetail(" + json[i].trainNo + ")'></i>&nbsp;&nbsp;<i class='fa fa-remove' title='删除' onclick='deleteTraining(" + json[i].trainNo + ")'></i></td>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function doTrainingFilter() {
+    var trainType = $("#all-train-div-content select[name=train-type]").val();
+    var chaNo = $("#all-train-div-content select[name=chano3]").val();
+    $("#all-train-div-content #all-train-table").empty();
+    initAllTrain(trainType, chaNo);
+  }
+  function deleteTraining(trainNo) {
+    if (confirm("确认要删除此练习？")) {
+      $.ajax({
+        type: "post",
+        url: defaultUrl + "delTraining",
+        data: {
+          trainNo: trainNo
+        },
+        success: function () {
+          $("#all-train-div-content #all-train-table").empty();
+          initAllTrain(-1, -1);
+          alert("删除成功！")
+        },
+        error: function () {
+          alert("error");
+        }
+      });
+    }
+  }
+  function trainingDetail(trainNo) {
+    pop("<iframe src=\"../train_preview.html?trainNo=" + trainNo + "\"></iframe>");
+  }
+</script>

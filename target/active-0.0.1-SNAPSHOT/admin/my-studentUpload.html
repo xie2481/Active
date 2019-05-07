@@ -1,0 +1,34 @@
+<form id = "uploadStudentInfo" enctype="multipart/form-data">
+	<br>
+	<div class = "form-ipt">
+		<div class = "til">选择学生信息表</div>
+		<div class = "con">
+			<input name = "upload" type = "file" accept = ".xls">
+		</div>
+		<div style="color: grey;padding-top: 10px;font-size: 13px;">注：请先上传自己负责的班级信息，否则学生信息可能上传失败
+      </div>
+	</div>
+	<br>
+	<div class="form-ipt">
+  <button class="til submit-btn" type="button" onclick="addInfo()">添加信息</button>
+</div>
+</form>
+<script>
+	function addInfo(){
+		var formData = new FormData($("#uploadStudentInfo")[0]);
+		 $.ajax({
+		      url: defaultUrl + "uploadStudentInfo",
+		      type: 'POST',
+		      data: formData,
+		      cache: false,
+		      contentType: false,
+		      processData: false,
+		      success: function () {
+		        alert("上传成功！");
+		      },
+		      error: function () {
+		        alert("error");
+		      }
+		    });
+	}
+</script>

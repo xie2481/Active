@@ -1,0 +1,84 @@
+﻿<!--div class="toolbar">
+  练习类型：
+  <select name="exam-type">
+    <option value="-1">不限</option>
+    <option value="1">普通练习</option>
+    <option value="2">家庭作业</option>
+  </select>
+  &nbsp;&nbsp;章节：
+  <select name="chano1" class="chapter1" onclick="getNext(this.value,2);">
+  </select>
+  <select name="chano2" class="chapter2" onclick="getNext(this.value,3);">
+    <option value="-1">不限</option>
+  </select>
+  <select name="chano3" class="chapter3">
+    <option value="-1">不限</option>
+  </select>
+  &nbsp;&nbsp;
+  <button class="toolbar-filter" onclick="doExamFilter()">筛选</button>
+</div-->
+<table class="table" id="my-test-table"></table>
+
+<script type="text/javascript">
+  var pageName = "my-test";
+  function initThis() {
+    initAllExam();
+    initChapter(0, pageName, 1);
+    $("#my-test-div-content .chapter1").prepend("<option value=\"-1\">不限</option>");
+  }
+  function initAllExam() {
+    $.ajax({
+      type: "post",
+      url: defaultUrl + "getExams",
+      data: {
+        tNo: localStorage.getItem("tno")
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        $("#my-test-div-content #my-test-table").append("<tr class=\"table-head\"><td>试卷编号</td><td>试卷名称</td><td>开考时间</td><td>有效期至</td><td>考试时间</td><td>总分</td><td>上传时间</td><td>操作</td></tr>");
+        for (var i = 0; i < json.length; i++) {
+          $("#my-test-div-content #my-test-table").append("<tr id='my-test-tr" + i + "'></tr>");
+          $("#my-test-div-content #my-test-tr" + i).append("<td>" + json[i].eNo + "</td>");
+          $("#my-test-div-content #my-test-tr" + i).append("<td>" + json[i].eName + "</td>");
+          $("#my-test-div-content #my-test-tr" + i).append("<td>" + (json[i].eBeginTime.year + 1900) + "-" + (json[i].eBeginTime.month + 1 ) + "-" + json[i].eBeginTime.date + "</td>");
+          $("#my-test-div-content #my-test-tr" + i).append("<td>" + (json[i].eEndTime.year + 1900) + "-" + (json[i].eEndTime.month + 1 ) + "-" + json[i].eEndTime.date + "</td>");
+          $("#my-test-div-content #my-test-tr" + i).append("<td>" + json[i].eDuration + "</td>");
+          $("#my-test-div-content #my-test-tr" + i).append("<td>" + json[i].eMark + "</td>");
+          $("#my-test-div-content #my-test-tr" + i).append("<td>" + (json[i].eTime.year + 1900) + "-" + (json[i].eTime.month + 1 ) + "-" + json[i].eTime.date + "</td>");
+          $("#my-test-div-content #my-test-tr" + i).append("<td class='operate-td'><i class='fa fa-th-list' title='查看详情' onclick='examDetail(\"" + json[i].eNo + "\")'></i>&nbsp;&nbsp;<i class='fa fa-remove' title='删除' onclick='deleteExam(\"" + json[i].eNo + "\")'></i></td>");
+        }
+      },
+      error: function () {
+        alert("error");
+      }
+    });
+  }
+  function doExamFilter() {
+    var examType = $("#my-test-div-content select[name=exam-type]").val();
+    var chaNo = $("#my-test-div-content select[name=chano3]").val();
+    $("#my-test-div-content #my-test-table").empty();
+    initAllExam(examType, chaNo);
+  }
+  function deleteExam(eNo) {
+    if (confirm("确认要删除此试卷？")) {
+      $.ajax({
+        type: "post",
+        url: defaultUrl + "delExam",
+        data: {
+          eNo: eNo
+        },
+        success: function () {
+          $("#my-test-div-content #my-test-table").empty();
+          initAllExam(-1, -1);
+          alert("删除成功！")
+        },
+        error: function () {
+          alert("error");
+        }
+      });
+    }
+  }
+  function examDetail(eNo) {
+    pop("<iframe src=\"../test_preview.html?eNo=" + eNo + "\"></iframe>");
+  }
+</script>

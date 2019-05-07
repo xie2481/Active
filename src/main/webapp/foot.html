@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title></title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    #container {
+      background: #666;
+      min-height: 100%; /*使内容高度和body一样*/
+      margin-bottom: -80px; /*向上缩减80像素，不至于footer超出屏幕可视范围*/
+    }
+
+    #content {
+      padding-bottom: 160px; /*这个是关键，处理页面高度超出屏幕可视范围时，控制内容和底部高度之间距离*/
+    }
+
+    #footer {
+      background: #ddd;
+      height: 80px;
+    }
+  </style>
+</head>
+<body>
+<div id="container">
+  <div id="content">页面正文</div>
+</div>
+<div id="footer"></div>
+</body>
+</html>

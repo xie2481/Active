@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>登陆生动</title>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="bookmark"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="icon"/>
+  <link href="res/logo.ico" mce_href="res/logo.ico" type="image/x-icon" rel="shortcut icon"/>
+  <link rel="stylesheet" type="text/css" href="style/main.css">
+</head>
+<body style="background: #fdfdfd ">
+<!--顶栏-->
+<div class="top_bar">
+  <div class="nor_bar">
+    <div class="top_bar_left">
+      <a href="index.html">生动网</a>
+      <a href="introduce.html">平台介绍</a>
+      <a href="about.html">关于生动</a>
+      <a href="contact.html">联系我们</a>
+      <a href="mobile/index.html">生动网移动版</a>
+      <a href="feedback.html">问题反馈</a>
+    </div>
+    <div class="top_bar_right">
+    </div>
+  </div>
+</div>
+<div style=" width:800px; position:relative; margin:0px auto;">
+  <div id="confirm-div"
+       style="display: none; position:absolute; top:100px; width:800px;background: white;border: 1px solid #ddd">
+    <div style="line-height: 3;text-align: center;border-bottom: 1px dashed #ddd;font-weight: bold">
+      确认
+    </div>
+    <div style="padding: 8px;line-height: 2" id="tip-content">
+      （一）考生进入考场后应按指定的座位就座，并将身份证摆在桌面左上角。证件不全者不准进入考场。迟到15分钟不得入场。 
+      <br>（二）考生不得携带任何与考核有关的资料进入考场（已经带入的请将其放在考场前面的非考核区域），所有通讯工具必须关闭。考核正式开始后，如在现场发现携带有关资料、或者通讯工具未关闭，一律按作弊处理，试卷作废。 
+      <br>（三）考核期间不准吸烟，考生不论因何原因离开考场均不得再进入考场。 
+      <br>（四）开考30分钟后，考生方可交卷。考生需交卷时，把试卷翻放在本人桌面上，然后安静、迅速离开考场。 
+      <br>（五）考核结束时间到，所有考生立即停止答卷或操作，并将试卷翻放在本人桌面上，待考评人员取走试卷后，迅速离开考场，不得在考场逗留。 
+      <br>（六）考生拿到试卷后，应检查试卷有无错页、漏页等。 
+      <br>（七）考生在答题前将本人姓名等信息写在试卷规定位置，答题一律用蓝色、黑色水笔或圆珠笔，其他颜色笔答题无效。 
+      <br>（八）考生不得要求监考人员解释试题，如遇试卷模糊、设备故障等问题可举手询问。考生须保持考场安静，不许交头接耳，严禁偷看他人试题或交换试卷。对违犯考场纪律者，监考人员有权作出警告以至取消其考核资格的决定。 
+      <br>（九）与考核无关人员一律不得进入考场。
+    </div>
+    <div style="border-top: 1px dashed #ddd;">
+      <div style="float: left; color: #d9534f; margin:8px;cursor: pointer" onClick="javascript :history.back();">&lt;
+        我不同意！
+      </div>
+      <div style="float: right;color: #337ab7; margin:8px;cursor: pointer" id="agree-btn">同意并开始考试 &gt;</div>
+    </div>
+  </div>
+</div>
+<div
+    style="background: white;text-align: center; position:fixed; bottom:0px; width:100%; line-height:45px; color: rgba(220,220,220,1.00); border-top:1px solid #F4F4F4;">
+  Copyright &copy; 2016 生动网页 All Rights Reserved.
+</div>
+
+<script src="js/jquery.min.js"></script>
+<script src="js/public.js" charset="gbk"></script>
+<script type="text/javascript">
+  $(function () {
+    nav();
+    if (GetQueryString("eNo") == null) {
+      location.href = "test_stv.html";
+    } else {
+      init();
+    }
+  });
+  function init() {
+    $("#confirm-div").fadeIn(300);
+    $.ajax({
+      async: false,
+      type: "post",
+      url: defaultUrl + "getExamsheetList",
+      data: {
+        sNo: localStorage.getItem("sno"),
+        eNo: GetQueryString("eNo")
+      },
+      success: function (j) {
+        var json = JSON.parse(j).data;
+        if (json.length != 0) {
+          location.href = "test_stv.html?eNo=" + GetQueryString("eNo");
+        } else {
+          initConfirm();
+        }
+      },
+      error: function () {
+      }
+    });
+  }
+  function initConfirm() {
+    $("#agree-btn").click(function () {
+      $.ajax({
+        type: "post",
+        url: defaultUrl + "addTestTime",
+        data: {
+          sNo: localStorage.getItem("sno"),
+          eNo: GetQueryString("eNo")
+        },
+        success: function (j) {
+          location.href = "test_show.html?eNo=" + GetQueryString("eNo");
+        },
+        error: function () {
+          location.href = "test_show.html?eNo=" + GetQueryString("eNo");
+        }
+      });
+    });
+  }
+</script>
+</body>
+</html>
